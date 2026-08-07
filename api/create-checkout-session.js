@@ -1,6 +1,6 @@
-import { redis } from './_db.js';
 import { stripe, CREDIT_PACKAGES } from './_stripe.js';
-import { requireSessionEmail } from './_auth.js';
+import { supabaseConfigured } from './_supabase.js';
+import { requireSessionUser } from './_auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -9,16 +9,17 @@ export default async function handler(req, res) {
     console.error('[create-checkout-session] STRIPE_SECRET_KEY not configured');
     return res.status(500).json({ error: 'STRIPE_SECRET_KEY not configured' });
   }
-  if (!redis) {
-    console.error('[create-checkout-session] Upstash Redis not configured');
+  if (!supabaseConfigured) {
+    console.error('[create-checkout-session] Supabase not configured');
     return res.status(500).json({ error: 'Database not configured' });
   }
 
   // The purchase is always credited to the logged-in session's own email —
   // never a client-supplied one, or a purchase could be misdirected to
   // (or spoofed against) an account the buyer doesn't own.
-  const email = await requireSessionEmail(req);
-  if (!email) return res.status(401).json({ error: 'Please log in' });
+  const user = await requireSessionUser(req, res);
+  if (!user) return res.status(401).json({ error: 'Please log in' });
+  const email = user.email;
 
   const { package: packageId, return_page } = req.body || {};
 

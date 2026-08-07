@@ -1,5 +1,6 @@
-import { redis, deductCredit, addCredits, ensureWelcomeCredit } from './_db.js';
-import { requireSessionEmail } from './_auth.js';
+import { deductCredit, addCredits, ensureWelcomeCredit } from './_db.js';
+import { supabaseConfigured } from './_supabase.js';
+import { requireSessionUser } from './_auth.js';
 
 export default async function handler(req, res) {
   console.log('[api/generate] handler invoked, method:', req.method);
@@ -16,18 +17,19 @@ export default async function handler(req, res) {
 
   if (!prompt) return res.status(400).json({ error: 'prompt is required' });
 
-  if (!redis) {
-    console.error('[api/generate] Upstash Redis not configured');
+  if (!supabaseConfigured) {
+    console.error('[api/generate] Supabase not configured');
     return res.status(500).json({ error: 'Database not configured' });
   }
 
   // The email that gets billed/credited comes only from the verified
   // session cookie, never from the request body — a client-supplied email
   // can't be trusted to spend or refund someone else's credits.
-  const normalizedEmail = await requireSessionEmail(req);
-  if (!normalizedEmail) {
+  const sessionUser = await requireSessionUser(req, res);
+  if (!sessionUser) {
     return res.status(401).json({ error: 'Please log in', code: 'not_logged_in' });
   }
+  const normalizedEmail = sessionUser.email;
 
   // Defensive fallback — the welcome credit is normally granted right at
   // registration, but this covers any account that predates that or was

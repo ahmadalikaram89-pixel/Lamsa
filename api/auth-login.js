@@ -1,11 +1,11 @@
-import { redis } from './_db.js';
-import { EMAIL_RE, getUser, verifyPassword, createSession, setSessionCookie } from './_auth.js';
+import { supabaseConfigured } from './_supabase.js';
+import { EMAIL_RE, signIn, setSessionCookies } from './_auth.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  if (!redis) {
-    console.error('[auth-login] Upstash Redis not configured');
+  if (!supabaseConfigured) {
+    console.error('[auth-login] Supabase not configured');
     return res.status(500).json({ error: 'Database not configured' });
   }
 
@@ -17,21 +17,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const user = await getUser(normalizedEmail);
+    const session = await signIn(normalizedEmail, password);
     // Same generic error whether the email is unknown or the password is
     // wrong — don't let a login attempt reveal which accounts exist.
-    const genericError = () => res.status(401).json({ error: 'Invalid email or password' });
+    if (!session) return res.status(401).json({ error: 'Invalid email or password' });
 
-    if (!user) return genericError();
+    setSessionCookies(res, req, session);
 
-    const valid = await verifyPassword(password, user.passwordSalt, user.passwordHash);
-    if (!valid) return genericError();
-
-    const token = await createSession(normalizedEmail);
-    setSessionCookie(res, req, token);
-
+    const username = (session.user.user_metadata && session.user.user_metadata.username) || '';
     console.log('[auth-login] logged in', normalizedEmail);
-    return res.status(200).json({ username: user.username, email: user.email });
+    return res.status(200).json({ username, email: normalizedEmail });
   } catch (err) {
     console.error('[auth-login] error:', err.message);
     return res.status(500).json({ error: 'Login failed' });

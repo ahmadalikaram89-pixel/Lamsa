@@ -8,8 +8,8 @@ single photo.
 
 The whole app is static HTML/CSS/vanilla JS pages served by Vercel, backed by a
 handful of Vercel serverless functions under `api/` that call fal.ai (image
-generation), Stripe (one-time credit purchases), and Upstash Redis (credit
-balances).
+generation), Stripe (one-time credit purchases), and Supabase (accounts,
+sessions, and credit balances).
 
 ## Live flow
 
@@ -44,8 +44,8 @@ handler(req, res)`).
 
 | Endpoint | Method | Purpose |
 |---|---|---|
-| `POST /api/auth-register` | POST | Creates an account (`{ username, email, password, country }`), hashes the password (scrypt), starts a session, sets the `lamsa_session` cookie, grants the 1 free welcome credit. `409` if the email is already registered. |
-| `POST /api/auth-login` | POST | Verifies `{ email, password }` against the stored hash, starts a session, sets the `lamsa_session` cookie. Returns a generic `401` for both "no such account" and "wrong password" (no user enumeration). |
+| `POST /api/auth-register` | POST | Creates an account (`{ username, email, password, country }`) via Supabase Auth, starts a session, sets the `lamsa_at` / `lamsa_rt` cookies, grants the 1 free welcome credit. `409` if the email is already registered. |
+| `POST /api/auth-login` | POST | Verifies `{ email, password }` via Supabase Auth, starts a session, sets the `lamsa_at` / `lamsa_rt` cookies. Returns a generic `401` for both "no such account" and "wrong password" (no user enumeration). |
 | `POST /api/auth-logout` | POST | Destroys the current session and clears the cookie. |
 | `GET /api/me` | GET | Returns `{ username, email }` for the current session, or `401` if not logged in. Used by every protected page's auth guard. |
 | `POST /api/upload` | POST | Uploads a base64 image to fal.ai's CDN storage, returns a public `url`. |
@@ -57,28 +57,41 @@ handler(req, res)`).
 
 ## Authentication
 
-Accounts are real and server-verified — not a localStorage fake.
+Accounts are real and server-verified — not a localStorage fake. Identity and
+password storage are delegated entirely to Supabase Auth (`auth.users`); this
+codebase never sees or stores a raw password.
 
-- **Passwords**: hashed with Node's built-in `crypto.scrypt` (random per-user
-  salt, `crypto.timingSafeEqual` for comparison). Never stored in plaintext,
-  never sent back to the client.
-- **Sessions**: an opaque random token (`crypto.randomBytes(32)`) is stored in
-  Upstash Redis as `lamsa:session:<token> → email` with a 30-day TTL, and
-  delivered to the browser as an `httpOnly; SameSite=Lax` cookie (`Secure` too,
-  outside of `localhost`). JavaScript on the page can never read the token.
+- **Passwords**: hashed and verified by Supabase Auth itself. `api/_auth.js`
+  calls `supabase.auth.admin.createUser()` (registration, service-role key)
+  and `supabase.auth.signInWithPassword()` (login, anon key) — no password
+  hash ever touches this codebase or its own database.
+- **Sessions**: Supabase issues a short-lived JWT access token plus a
+  long-lived refresh token on sign-in. Both are delivered to the browser as
+  separate `httpOnly; SameSite=Lax` cookies (`lamsa_at` / `lamsa_rt`, `Secure`
+  too outside of `localhost`) — JavaScript on the page can never read either.
+  `requireSessionUser()` in `api/_auth.js` validates the access token on every
+  protected request and transparently refreshes it (re-issuing both cookies)
+  once it expires, using the refresh cookie — callers never have to think
+  about token expiry.
 - **Identity source of truth**: every protected endpoint (`/api/generate`,
-  `/api/credits`, `/api/create-checkout-session`) reads the user's identity
-  *only* from that session cookie via `requireSessionEmail()` in `api/_auth.js`
-  — never from an `email` field in the request body or query string. This is
-  what actually stops one person from spending or charging another person's
+  `/api/credits`, `/api/create-checkout-session`, `/api/me`) reads the user's
+  identity *only* from that session cookie via `requireSessionUser()` — never
+  from an `email` field in the request body or query string. This is what
+  actually stops one person from spending or charging another person's
   credits by guessing/typing their email.
 - **Page guards**: `lamsa-bilingual.html` and `rearrange.html` call `GET
   /api/me` on load and redirect to `lamsa-auth.html` if it 401s. A cached
   `{username, email}` in `localStorage` is used only to avoid a login-screen
   flash before that check resolves — it has no authority on its own.
-- **Google / Apple sign-in** buttons are present in the UI but not wired to a
-  real OAuth backend yet; they show an honest "coming soon" message instead of
-  faking a logged-in state.
+- **Google / Apple sign-in**: Supabase Auth supports both as OAuth providers
+  natively — the buttons are present in the UI but not wired up to it yet;
+  they show an honest "coming soon" message instead of faking a logged-in
+  state. Wiring them up is now a matter of enabling the provider in the
+  Supabase dashboard and adding a `supabase.auth.signInWithOAuth()` call on
+  the client, no custom backend work required.
+- **Password reset**: Supabase Auth has this built in
+  (`resetPasswordForEmail`) but it isn't wired into `lamsa-auth.html` yet
+  (`forgotPass` string already exists in the translations).
 
 ## Credits & payments
 
@@ -90,8 +103,11 @@ subscriptions. New emails get 1 free credit; each `/api/generate` call spends 1.
 - **Identity**: credits are keyed by the email on the user's verified server
   session (see [Authentication](#authentication)) — not a client-supplied
   field, so they can't be spent or purchased on someone else's behalf.
-- **Storage**: balances live in Upstash Redis (`api/_db.js`), not localStorage,
-  so they can't be reset by clearing browser storage.
+- **Storage**: balances live in a Postgres `credits` table on Supabase
+  (`api/_db.js`, schema in `sql/schema.sql`), not localStorage, so they can't
+  be reset by clearing browser storage. Deduction is atomic via a
+  `deduct_credit()` SQL function (`UPDATE ... WHERE balance > 0 RETURNING`),
+  the Postgres equivalent of the app's previous Redis Lua script.
 - **Payment methods**: Stripe Checkout with `payment_method_types` left
   unspecified, so it auto-includes whatever the Stripe Dashboard has enabled for
   the account's country — typically cards plus Apple Pay / Google Pay. Stripe
@@ -107,11 +123,13 @@ subscriptions. New emails get 1 free credit; each `/api/generate` call spends 1.
    `https://<your-domain>/api/stripe-webhook`, subscribed to
    `checkout.session.completed`. Copy its signing secret into
    `STRIPE_WEBHOOK_SECRET`.
-3. **Upstash Redis** — in the Vercel dashboard, add the Upstash integration from
-   the Marketplace (Vercel's own KV product was sunset) and connect it to this
-   project. It auto-injects `KV_REST_API_URL` / `KV_REST_API_TOKEN` (or
-   `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` if provisioned directly
-   via Upstash) — `api/_db.js` reads either naming.
+3. **Supabase project** — create one at [supabase.com](https://supabase.com/dashboard).
+   Copy `Project URL`, `anon` `public` key, and `service_role` `secret` key
+   (Project Settings → API) into `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and
+   `SUPABASE_SERVICE_ROLE_KEY`. Then run `sql/schema.sql` once in the
+   Supabase SQL Editor to create the `credits` / `stripe_events` tables and
+   their helper functions — user accounts themselves need no setup, they
+   live in Supabase's built-in `auth.users`.
 
 ## Environment variables
 
@@ -121,8 +139,9 @@ subscriptions. New emails get 1 free credit; each `/api/generate` call spends 1.
 | `ANTHROPIC_API_KEY` | (currently unused by any endpoint) | Reserved for Claude-vision features. |
 | `STRIPE_SECRET_KEY` | `api/create-checkout-session.js`, `api/stripe-webhook.js` | Stripe secret key (test or live). |
 | `STRIPE_WEBHOOK_SECRET` | `api/stripe-webhook.js` | Signing secret for the `checkout.session.completed` webhook endpoint. |
-| `KV_REST_API_URL` / `UPSTASH_REDIS_REST_URL` | `api/_db.js` (credits, webhook idempotency) | Upstash Redis REST URL — auto-injected by the Vercel Marketplace Upstash integration. |
-| `KV_REST_API_TOKEN` / `UPSTASH_REDIS_REST_TOKEN` | `api/_db.js` | Upstash Redis REST token — auto-injected alongside the URL above. |
+| `SUPABASE_URL` | `api/_supabase.js` | Supabase project URL. |
+| `SUPABASE_ANON_KEY` | `api/_supabase.js` (`supabaseAnon`) | Supabase anon/public key — used only for the sign-in/session-validation calls a browser client would make. |
+| `SUPABASE_SERVICE_ROLE_KEY` | `api/_supabase.js` (`supabaseAdmin`) | Supabase service-role key — bypasses Row Level Security; used for admin user management and the credits/stripe_events tables. Never expose this to the browser. |
 
 Set these in your Vercel project settings, or in a local `.env` file when running
 with `vercel dev`.
@@ -131,7 +150,7 @@ with `vercel dev`.
 
 This is a static site with serverless API routes, deployed on Vercel. There's no
 build step for the frontend, but the API functions now depend on npm packages
-(`stripe`, `@upstash/redis`), so install them once:
+(`stripe`, `@supabase/supabase-js`), so install them once:
 
 ```bash
 npm install
@@ -167,8 +186,8 @@ serverless functions, serves any `*.html` path directly, and redirects `/` to
 ├── js/
 │   └── nearby-stores.js  # shared "shop similar pieces" render logic
 ├── api/
-│   ├── auth-register.js   # create account, hash password, start session
-│   ├── auth-login.js      # verify password, start session
+│   ├── auth-register.js   # create account (Supabase Auth), start session
+│   ├── auth-login.js      # verify password (Supabase Auth), start session
 │   ├── auth-logout.js     # destroy session
 │   ├── me.js               # who's logged in, from the session cookie
 │   ├── upload.js          # image upload → fal.ai storage
@@ -177,9 +196,12 @@ serverless functions, serves any `*.html` path directly, and redirects `/` to
 │   ├── credits.js         # get the logged-in user's credit balance
 │   ├── create-checkout-session.js  # start a Stripe Checkout session
 │   ├── stripe-webhook.js  # grant credits once Stripe confirms payment
-│   ├── _auth.js           # password hashing + session helpers (not a route)
-│   ├── _db.js             # Upstash Redis client + credit helpers (not a route)
+│   ├── _auth.js           # Supabase Auth session helpers (not a route)
+│   ├── _supabase.js       # Supabase clients (admin + anon) (not a route)
+│   ├── _db.js             # credits ledger on Supabase Postgres (not a route)
 │   └── _stripe.js         # Stripe client + credit package pricing (not a route)
+├── sql/
+│   └── schema.sql         # Supabase Postgres schema: credits, stripe_events, RPCs
 ├── package.json
 └── vercel.json
 ```
