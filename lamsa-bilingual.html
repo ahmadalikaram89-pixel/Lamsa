@@ -2826,13 +2826,13 @@
           return;
         }
 
-        if (!result.ok || !result.data || !result.data.request_id) {
-          console.error('[generate] no request_id in response:', result.data);
+        if (!result.ok || !result.data || !Array.isArray(result.data.requests) || !result.data.requests.length) {
+          console.error('[generate] no requests[] in response:', result.data);
           showGenerateError('Error generating image. Please try again.');
           return;
         }
 
-        pollForResult(result.data.request_id, 0);
+        pollForResult(result.data.requests);
       })
       .catch(function(err) {
         console.error('[generate] submit error:', err);
@@ -2843,53 +2843,76 @@
     var POLL_INTERVAL_MS = 2500;
     var MAX_POLL_ATTEMPTS = 60; // ~2.5 minutes
 
-    function pollForResult(requestId, attempt) {
-      if (attempt >= MAX_POLL_ATTEMPTS) {
-        console.error('[generate] polling timed out for request_id:', requestId);
-        showGenerateError('Generation is taking too long. Please try again.');
-        return;
-      }
-
-      fetchJson('/api/status?request_id=' + encodeURIComponent(requestId))
-        .then(function(result) {
-          console.log('[generate] status check #' + attempt + ' (http ' + result.status + '):', result.data);
-
-          if (!result.ok) {
-            console.error('[generate] status check returned an error:', result.data);
-            showGenerateError('Error generating image. Please try again.');
+    // Every generation submits to two different AI models in parallel (see
+    // api/generate.js) so the user gets results to compare instead of a
+    // single model's opinion. Each request is polled independently — a
+    // resolved promise here always yields an array of images (empty if that
+    // particular model failed or timed out, never a rejection), so one
+    // model's failure can't block the other's result from showing.
+    function pollSingleRequest(requestId, model, attempt) {
+      return new Promise(function(resolve) {
+        function tick(n) {
+          if (n >= MAX_POLL_ATTEMPTS) {
+            console.error('[generate] polling timed out for', model, requestId);
+            resolve([]);
             return;
           }
 
-          // fal.ai returns status in varying casing depending on the endpoint version,
-          // so normalize before comparing.
-          var status = (result.data.status || '').toString().toUpperCase();
+          fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&model=' + encodeURIComponent(model))
+            .then(function(result) {
+              console.log('[generate] status check #' + n + ' (' + model + ', http ' + result.status + '):', result.data);
 
-          if (status === 'COMPLETED') {
-            fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&mode=result')
-              .then(function(resultResp) {
-                console.log('[generate] result (http ' + resultResp.status + '):', resultResp.data);
-                if (!resultResp.ok) {
-                  console.error('[generate] result fetch returned an error:', resultResp.data);
-                  showGenerateError('Error generating image. Please try again.');
-                  return;
-                }
-                renderResult(resultResp.data);
-              })
-              .catch(function(err) {
-                console.error('[generate] result fetch error:', err);
-                showGenerateError('Connection error. Please try again.');
-              });
-          } else if (status === 'FAILED' || status === 'ERROR') {
-            console.error('[generate] generation failed:', result.data);
+              if (!result.ok) {
+                console.error('[generate] status check returned an error:', model, result.data);
+                resolve([]);
+                return;
+              }
+
+              // fal.ai returns status in varying casing depending on the endpoint version,
+              // so normalize before comparing.
+              var status = (result.data.status || '').toString().toUpperCase();
+
+              if (status === 'COMPLETED') {
+                fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&model=' + encodeURIComponent(model) + '&mode=result')
+                  .then(function(resultResp) {
+                    console.log('[generate] result (' + model + ', http ' + resultResp.status + '):', resultResp.data);
+                    if (!resultResp.ok) {
+                      console.error('[generate] result fetch returned an error:', model, resultResp.data);
+                      resolve([]);
+                      return;
+                    }
+                    resolve(extractResultImages(resultResp.data) || []);
+                  })
+                  .catch(function(err) {
+                    console.error('[generate] result fetch error:', model, err);
+                    resolve([]);
+                  });
+              } else if (status === 'FAILED' || status === 'ERROR') {
+                console.error('[generate] generation failed:', model, result.data);
+                resolve([]);
+              } else {
+                // IN_QUEUE or IN_PROGRESS — keep polling
+                setTimeout(function() { tick(n + 1); }, POLL_INTERVAL_MS);
+              }
+            })
+            .catch(function(err) {
+              console.error('[generate] status check error:', model, err);
+              resolve([]);
+            });
+        }
+        tick(attempt || 0);
+      });
+    }
+
+    function pollForResult(requests) {
+      Promise.all(requests.map(function(r) { return pollSingleRequest(r.request_id, r.model, 0); }))
+        .then(function(imageArrays) {
+          var allImages = [].concat.apply([], imageArrays);
+          if (!allImages.length) {
             showGenerateError('Error generating image. Please try again.');
-          } else {
-            // IN_QUEUE or IN_PROGRESS — keep polling
-            setTimeout(function() { pollForResult(requestId, attempt + 1); }, POLL_INTERVAL_MS);
+            return;
           }
-        })
-        .catch(function(err) {
-          console.error('[generate] status check error:', err);
-          showGenerateError('Connection error. Please try again.');
+          renderResult({ images: allImages });
         });
     }
 

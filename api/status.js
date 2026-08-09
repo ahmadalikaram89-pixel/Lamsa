@@ -9,15 +9,22 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'FAL_API_KEY not configured' });
   }
 
-  const { request_id, mode } = req.query;
+  const { request_id, mode, model } = req.query;
   if (!request_id) return res.status(400).json({ error: 'request_id is required' });
 
-  // NOTE: the queue's status/result endpoints live under the app's base path
-  // (fal-ai/flux-pro), NOT under the /kontext sub-route used to submit the job —
-  // fal.ai's own submit response returns status_url/response_url without /kontext.
-  // Hitting .../kontext/requests/{id}/status returns an empty 405 body, which used
-  // to crash this handler's JSON parsing.
-  const base = 'https://queue.fal.run/fal-ai/flux-pro/requests/' + request_id;
+  // NOTE: the queue's status/result endpoints live under each model's base
+  // app path, NOT under the specific sub-route used to submit the job (e.g.
+  // fal-ai/flux-pro, not fal-ai/flux-pro/kontext; fal-ai/nano-banana-pro, not
+  // fal-ai/nano-banana-pro/edit) — fal.ai's own submit response returns
+  // status_url/response_url without the sub-route. Hitting the sub-route
+  // path returns an empty 405 body, which used to crash this handler's JSON
+  // parsing. `model` picks which app's base to poll; defaults to flux for
+  // any caller that predates the two-model comparison feature.
+  const APP_BASES = {
+    flux: 'https://queue.fal.run/fal-ai/flux-pro/requests/',
+    nano: 'https://queue.fal.run/fal-ai/nano-banana-pro/requests/'
+  };
+  const base = (APP_BASES[model] || APP_BASES.flux) + request_id;
   const url = mode === 'result' ? base : (base + '/status');
 
   console.log('[api/status] fetching:', url);
