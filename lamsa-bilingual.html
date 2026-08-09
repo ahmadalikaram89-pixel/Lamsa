@@ -1007,6 +1007,23 @@
     font-size: 11px; cursor: pointer; transition: all 0.2s;
   }
   .modal-lang-tab.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+  .hiw-step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+  .hiw-step:last-child { margin-bottom: 0; }
+  .hiw-icon {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px;
+    background: var(--gold-dim); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; color: var(--gold);
+    position: relative;
+  }
+  .hiw-icon .icon-svg { width: 19px; height: 19px; }
+  .hiw-num {
+    position: absolute; top: -6px; inset-inline-end: -6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--gold); color: var(--black);
+    font-size: 10px; font-weight: 900; line-height: 16px; text-align: center;
+  }
+  .hiw-title { color: var(--white); font-size: 13.5px; font-weight: 700; margin-bottom: 3px; }
+  .hiw-desc { color: var(--gray); font-size: 12.5px; line-height: 1.6; }
 
   /* SCROLL REVEAL */
   .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
@@ -1065,7 +1082,7 @@
   <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="scrollToForm()" data-icon="palette" data-ar="صمّم غرفتك الآن" data-en="Design Your Room Now">Design Your Room Now</button>
-    <button class="btn-secondary" data-icon="arrowRight" data-icon-pos="after" data-ar="شاهد كيف يعمل" data-en="See How It Works">See How It Works</button>
+    <button class="btn-secondary" onclick="openModal('how-it-works')" data-icon="arrowRight" data-icon-pos="after" data-ar="شاهد كيف يعمل" data-en="See How It Works">See How It Works</button>
   </div>
   <div class="stats">
     <div class="stat">
@@ -3005,11 +3022,46 @@
     document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
   }
 
+  function buildHowItWorksBody(isAr) {
+    var steps = [
+      {
+        icon: 'camera',
+        title: isAr ? 'ارفع صور غرفتك' : 'Upload photos of your room',
+        desc: isAr ? 'صوّر غرفتك من زاوية أو زاويتين، أو ارسم مخطط سريع للغرفة بدل الصور.' : 'Snap 1-2 photos of your room, or sketch a quick floor plan instead.'
+      },
+      {
+        icon: 'gear',
+        title: isAr ? 'اختر الستايل والألوان والميزانية' : 'Pick your style, colors, and budget',
+        desc: isAr ? 'حدد نوع الديكور، لون الطلاء، والميزانية التقريبية للأثاث.' : 'Select a design style, color palette, and an approximate furniture budget.'
+      },
+      {
+        icon: 'sparkle',
+        title: isAr ? 'احصل على تصميم بالذكاء الاصطناعي خلال ثوانٍ' : 'Get your AI redesign in about 30 seconds',
+        desc: isAr ? 'الذكاء الاصطناعي يعيد تصميم غرفتك بنفس الأبعاد مع أثاث وديكور جديد.' : 'Our AI reimagines your room in the same layout with new furniture and decor.'
+      },
+      {
+        icon: 'sofa',
+        title: isAr ? 'تسوّق القطع القريبة منك' : 'Shop similar pieces near you',
+        desc: isAr ? 'بنوصلك بروابط لمتاجر قريبة فيها قطع تشبه اللي ظهرت بالتصميم.' : 'We link you to nearby stores carrying pieces like the ones in your design.'
+      }
+    ];
+    var html = '';
+    for (var i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      html += '<div class="hiw-step"><div class="hiw-icon">' + (window.icon ? window.icon(s.icon) : '') +
+        '<span class="hiw-num">' + (i + 1) + '</span></div><div><div class="hiw-title">' + s.title +
+        '</div><div class="hiw-desc">' + s.desc + '</div></div></div>';
+    }
+    return html;
+  }
+
   function openModal(type) {
+    var isAr = currentLang === 'ar';
     var langContent = {
       privacy: { title: 'Privacy Policy', body: '<h3>1. Data We Collect</h3><p>Room photos you upload and design details you enter.</p><h3>2. How We Use It</h3><p>Only to generate your AI design. Photos are not stored after your session.</p><h3>3. Your Rights (GDPR)</h3><p>Contact us at hello@lamsa.app to request access, correction or deletion of your data.</p>' },
       terms: { title: 'Terms of Service', body: '<h3>1. Acceptance</h3><p>By using Lamsa, you agree to these terms.</p><h3>2. Image Rights</h3><p>You confirm uploaded photos are of your own spaces.</p><h3>3. Limitation</h3><p>Lamsa is not responsible for purchase decisions based on generated designs.</p>' },
-      cookies: { title: 'Cookie Policy', body: '<h3>1. What Are Cookies?</h3><p>Small files stored on your device to improve your experience.</p><h3>2. Essential Cookies</h3><p>Required for the site to function, like remembering language preferences.</p><h3>3. Control</h3><p>You can disable cookies in your browser settings at any time.</p>' }
+      cookies: { title: 'Cookie Policy', body: '<h3>1. What Are Cookies?</h3><p>Small files stored on your device to improve your experience.</p><h3>2. Essential Cookies</h3><p>Required for the site to function, like remembering language preferences.</p><h3>3. Control</h3><p>You can disable cookies in your browser settings at any time.</p>' },
+      'how-it-works': { title: isAr ? 'كيف يعمل Lamsa' : 'How Lamsa Works', body: buildHowItWorksBody(isAr) }
     };
     var data = langContent[type];
     document.getElementById('modalTitle').textContent = data.title;
