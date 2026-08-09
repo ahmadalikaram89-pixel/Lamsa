@@ -464,7 +464,11 @@
     transition: all 0.2s;
   }
   .success-close:hover { border-color: var(--gold); color: var(--gold-deep); }
-  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-icon { font-size: 48px; margin-bottom: 16px; display: inline-block; animation: icon-twinkle 1.8s ease-in-out infinite; color: var(--gold); }
+  @keyframes icon-twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.75; }
+    50% { transform: scale(1.22) rotate(12deg); opacity: 1; }
+  }
   .success-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
   .success-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
   .success-btn {
