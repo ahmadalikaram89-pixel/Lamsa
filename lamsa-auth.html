@@ -307,6 +307,15 @@
     transition: border-color 0.2s;
   }
   .form-input:focus { border-color: var(--gold); }
+  .form-input:-webkit-autofill,
+  .form-input:-webkit-autofill:hover,
+  .form-input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--white);
+    -webkit-box-shadow: 0 0 0 1000px var(--dark) inset;
+    box-shadow: 0 0 0 1000px var(--dark) inset;
+    caret-color: var(--white);
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
   .form-input::placeholder { color: #444; }
 
   .input-wrap { position: relative; }
