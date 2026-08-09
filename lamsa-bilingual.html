@@ -22,7 +22,10 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<script src="js/icons.js"></script>
 <style>
+  .icon-svg { width: 1.15em; height: 1.15em; vertical-align: -0.18em; display: inline-block; flex-shrink: 0; }
+  [dir="rtl"] .icon-svg.rtl-flip { transform: scaleX(-1); }
   :root {
     --black: #f6f7f8;
     --dark: #edeff1;
@@ -470,7 +473,7 @@
     margin-bottom: 32px;
     animation: fadeDown 0.8s ease both;
   }
-  .hero-badge::before { content: '✦'; font-size: 10px; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
   @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
@@ -1027,7 +1030,7 @@
     <div class="logo-text">LAMSA</div>
   </div>
   <div class="nav-right">
-    <a class="nav-rearrange" href="rearrange.html" data-en="✨ Quick Rearrange" data-ar="✨ إعادة ترتيب سريعة">✨ Quick Rearrange</a>
+    <a class="nav-rearrange" href="rearrange.html" data-icon="sparkles" data-en="Quick Rearrange" data-ar="إعادة ترتيب سريعة">Quick Rearrange</a>
     <div class="lang-dropdown" id="langDropdown">
       <button class="lang-selected" onclick="toggleLangMenu()">
         <span id="langFlag">🇬🇧</span>
@@ -1061,8 +1064,8 @@
   </h1>
   <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="hero-cta">
-    <button class="btn-primary" onclick="scrollToForm()" data-ar="🎨 صمّم غرفتك الآن" data-en="🎨 Design Your Room Now">🎨 Design Your Room Now</button>
-    <button class="btn-secondary" data-ar="شاهد كيف يعمل ←" data-en="See How It Works →">See How It Works →</button>
+    <button class="btn-primary" onclick="scrollToForm()" data-icon="palette" data-ar="صمّم غرفتك الآن" data-en="Design Your Room Now">Design Your Room Now</button>
+    <button class="btn-secondary" data-icon="arrowRight" data-icon-pos="after" data-ar="شاهد كيف يعمل" data-en="See How It Works">See How It Works</button>
   </div>
   <div class="stats">
     <div class="stat">
@@ -1094,23 +1097,23 @@
     <!-- PROGRESS -->
     <div class="progress-bar">
       <div class="progress-step active" onclick="goTo(1)">
-        <span class="step-num-badge">📸</span>
+        <span class="step-num-badge"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1-2h6l1 2h2.5A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9z"/><circle cx="12" cy="13" r="3.4"/></svg></span>
         <span data-ar="الصورة" data-en="Photo">الصورة</span>
       </div>
       <div class="progress-step" onclick="goTo(2)">
-        <span class="step-num-badge">📐</span>
+        <span class="step-num-badge"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v2M15 8v3M19 8v2"/></svg></span>
         <span data-ar="الغرفة" data-en="Room">الغرفة</span>
       </div>
       <div class="progress-step" onclick="goTo(3)">
-        <span class="step-num-badge">💰</span>
+        <span class="step-num-badge"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6.5 9v.01M17.5 15v.01"/></svg></span>
         <span data-ar="الميزانية" data-en="Budget">الميزانية</span>
       </div>
       <div class="progress-step" onclick="goTo(4)">
-        <span class="step-num-badge">🎨</span>
+        <span class="step-num-badge"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></span>
         <span data-ar="الستايل" data-en="Style">الستايل</span>
       </div>
       <div class="progress-step" onclick="goTo(5)">
-        <span class="step-num-badge">🪑</span>
+        <span class="step-num-badge"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v9M18 4v16M6 13h9.5c1.4 0 2.5 1.1 2.5 2.5V20"/><path d="M4 20h4M4 4h4"/></svg></span>
         <span data-ar="الأثاث" data-en="Furniture">الأثاث</span>
       </div>
     </div>
@@ -1126,7 +1129,7 @@
         <div class="upload-zone" id="uploadZone">
           <input type="file" accept="image/*" multiple id="fileInput" onchange="handleMultiUpload(this)">
           <div id="uploadContent">
-            <div class="upload-icon">📷</div>
+            <div class="upload-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1-2h6l1 2h2.5A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9z"/><circle cx="12" cy="13" r="3.4"/></svg></div>
             <div class="upload-title" data-ar="اسحب الصور هنا أو اضغط للرفع" data-en="Drag photos here or click to upload">اسحب الصور هنا أو اضغط للرفع</div>
             <div class="upload-sub" data-ar="حتى 5 صور · PNG, JPG, HEIC · حجم أقصى 10MB لكل صورة" data-en="Up to 5 photos · PNG, JPG, HEIC · Max 10MB each">حتى 5 صور · PNG, JPG, HEIC · حجم أقصى 10MB لكل صورة</div>
           </div>
@@ -1137,15 +1140,15 @@
 
         <!-- UPLOAD TIPS -->
         <div class="upload-tips">
-          <div class="tip-item">📸 <span data-ar="صورة أمامية" data-en="Front view">صورة أمامية</span></div>
-          <div class="tip-item">↔️ <span data-ar="صورة جانبية" data-en="Side view">صورة جانبية</span></div>
-          <div class="tip-item">🔄 <span data-ar="صورة من الزاوية" data-en="Corner view">صورة من الزاوية</span></div>
-          <div class="tip-item">🪟 <span data-ar="جهة النافذة" data-en="Window side">جهة النافذة</span></div>
+          <div class="tip-item"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1-2h6l1 2h2.5A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9z"/><circle cx="12" cy="13" r="3.4"/></svg> <span data-ar="صورة أمامية" data-en="Front view">صورة أمامية</span></div>
+          <div class="tip-item"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h11l-3-3M17 16H6l3 3"/></svg> <span data-ar="صورة جانبية" data-en="Side view">صورة جانبية</span></div>
+          <div class="tip-item"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.8 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg> <span data-ar="صورة من الزاوية" data-en="Corner view">صورة من الزاوية</span></div>
+          <div class="tip-item"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4v16M4 12h16"/></svg> <span data-ar="جهة النافذة" data-en="Window side">جهة النافذة</span></div>
         </div>
 
         <div class="panel-nav">
           <div></div>
-          <button class="btn-next" onclick="next()" data-ar="التالي ←" data-en="Next →">Next →</button>
+          <button class="btn-next" onclick="next()" data-icon="arrowRight" data-icon-pos="after" data-ar="التالي" data-en="Next">Next</button>
         </div>
       </div>
 
@@ -1187,17 +1190,17 @@
           <div class="floorplan-sub" data-en="Tap a wall below to mark where a window or door is" data-ar="اضغط على أحد الجدران بالأسفل لتحديد مكان النافذة أو الباب">Tap a wall below to mark where a window or door is</div>
           <canvas id="floorplanCanvas" width="600" height="400" onclick="floorplanClick(event)"></canvas>
           <div class="floorplan-tools">
-            <button type="button" class="fp-tool-btn active" id="fpToolWindow" onclick="setFpTool('window')" data-en="🪟 Window" data-ar="🪟 نافذة">🪟 Window</button>
-            <button type="button" class="fp-tool-btn" id="fpToolDoor" onclick="setFpTool('door')" data-en="🚪 Door" data-ar="🚪 باب">🚪 Door</button>
-            <button type="button" class="fp-tool-btn" id="fpToolErase" onclick="setFpTool('erase')" data-en="🗑️ Remove" data-ar="🗑️ حذف">🗑️ Remove</button>
+            <button type="button" class="fp-tool-btn active" id="fpToolWindow" onclick="setFpTool('window')" data-icon="windowIcon" data-en="Window" data-ar="نافذة">Window</button>
+            <button type="button" class="fp-tool-btn" id="fpToolDoor" onclick="setFpTool('door')" data-icon="door" data-en="Door" data-ar="باب">Door</button>
+            <button type="button" class="fp-tool-btn" id="fpToolErase" onclick="setFpTool('erase')" data-icon="trash" data-en="Remove" data-ar="حذف">Remove</button>
           </div>
           <div class="floorplan-hint" data-en="Click a wall edge to place, or switch to Remove and click a marker" data-ar="اضغط على حافة الجدار للإضافة، أو اختر «حذف» ثم اضغط على العلامة">Click a wall edge to place, or switch to Remove and click a marker</div>
         </div>
         </div>
 
         <div class="panel-nav">
-          <button class="btn-prev" onclick="prev()" data-ar="→ السابق" data-en="← Back">← Back</button>
-          <button class="btn-next" onclick="next()" data-ar="التالي ←" data-en="Next →">Next →</button>
+          <button class="btn-prev" onclick="prev()" data-icon="arrowLeft" data-ar="السابق" data-en="Back">Back</button>
+          <button class="btn-next" onclick="next()" data-icon="arrowRight" data-icon-pos="after" data-ar="التالي" data-en="Next">Next</button>
         </div>
       </div>
 
@@ -1277,8 +1280,8 @@
         </div>
 
         <div class="panel-nav">
-          <button class="btn-prev" onclick="prev()" data-ar="→ السابق" data-en="← Back">← Back</button>
-          <button class="btn-next" onclick="next()" data-ar="التالي ←" data-en="Next →">Next →</button>
+          <button class="btn-prev" onclick="prev()" data-icon="arrowLeft" data-ar="السابق" data-en="Back">Back</button>
+          <button class="btn-next" onclick="next()" data-icon="arrowRight" data-icon-pos="after" data-ar="التالي" data-en="Next">Next</button>
         </div>
       </div>
 
@@ -1288,22 +1291,22 @@
         <div class="panel-sub" data-ar="اختر الطابع العام للتصميم — ممكن تختار أكثر من واحد" data-en="Choose the overall design style — you can pick more than one">اختر الطابع العام للتصميم — ممكن تختار أكثر من واحد</div>
 
         <!-- MODERN -->
-        <div class="style-section-label" data-en="🌍 Global / Modern" data-ar="🌍 عالمي / حديث">🌍 Global / Modern</div>
+        <div class="style-section-label" data-icon="globe" data-en="Global / Modern" data-ar="عالمي / حديث">Global / Modern</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="modern contemporary interior design">
-            <div class="lc-icon">🏠</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/><path d="M10 20v-5h4v5"/></svg></div>
             <div class="lc-name" data-en="Modern" data-ar="عصري">Modern</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="minimalist interior design">
-            <div class="lc-icon">◻️</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg></div>
             <div class="lc-name" data-en="Minimal" data-ar="مينيمال">Minimal</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="industrial loft interior design">
-            <div class="lc-icon">⚙️</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.4-2-3.4-2.3.9a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.5 2.4a7.7 7.7 0 0 0-2.6 1.5l-2.3-.9-2 3.4 2 1.4a7.6 7.6 0 0 0 0 3l-2 1.4 2 3.4 2.3-.9c.8.7 1.6 1.2 2.6 1.5L10 22h4l.5-2.6a7.7 7.7 0 0 0 2.6-1.5l2.3.9 2-3.4z"/></svg></div>
             <div class="lc-name" data-en="Industrial" data-ar="صناعي">Industrial</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="bohemian eclectic interior design">
-            <div class="lc-icon">🎨</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>
             <div class="lc-name" data-en="Bohemian" data-ar="بوهيمي">Bohemian</div>
           </div>
         </div>
@@ -1312,7 +1315,7 @@
         <div class="style-section-label" data-en="🇪🇺 European" data-ar="🇪🇺 أوروبي">🇪🇺 European</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Scandinavian Nordic interior design warm wood white walls">
-            <div class="lc-icon">🌿</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c8-1 13-6 14-14-8 1-13 6-14 14z"/><path d="M6 18c3-3 6-6 12-12"/></svg></div>
             <div class="lc-name" data-en="Scandinavian" data-ar="سكاندنافي">Scandinavian</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="French classic elegant interior design ornate details">
@@ -1328,7 +1331,7 @@
             <div class="lc-name" data-en="Spanish / Mediterranean" data-ar="إسباني / متوسطي">Spanish / Mediterranean</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Victorian classic British interior design rich colors dark wood">
-            <div class="lc-icon">🏰</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V10l2-2V6h2v2l2-2V4h4v2l2-2v2h2v2l2 2v11z"/><path d="M4 21h16M9 21v-5h6v5"/></svg></div>
             <div class="lc-name" data-en="Victorian / British" data-ar="فيكتوري / بريطاني">Victorian / British</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="German Bauhaus minimal functional interior design">
@@ -1338,10 +1341,10 @@
         </div>
 
         <!-- ORIENTAL -->
-        <div class="style-section-label" data-en="🕌 Oriental" data-ar="🕌 شرقي">🕌 Oriental</div>
+        <div class="style-section-label" data-icon="mosque" data-en="Oriental" data-ar="شرقي">Oriental</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="luxury Arabic interior design gold ornaments arabesque patterns dark colors">
-            <div class="lc-icon">🕌</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.6 1.4-1.6 3.6 0 5 1.6-1.4 1.6-3.6 0-5z"/><path d="M4 21V13a8 8 0 0 1 16 0v8"/><path d="M4 21h16M10 21v-6h4v6"/><path d="M4 13h3M17 13h3"/></svg></div>
             <div class="lc-name" data-en="Luxury Arabic" data-ar="عربي فاخر">Luxury Arabic</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Moroccan interior design zellige tiles lanterns warm colors arches">
@@ -1353,13 +1356,13 @@
             <div class="lc-name" data-en="Turkish / Ottoman" data-ar="تركي / عثماني">Turkish / Ottoman</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Persian Iranian interior design ornate carpets gold details arched windows">
-            <div class="lc-icon">🏺</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v3.5c0 1-3 2-3 5.5a5 5 0 0 0 10 0c0-3.5-3-4.5-3-5.5V3"/><path d="M7 21h10"/><path d="M8.5 21c-.6-2 .5-4 3.5-4s4.1 2 3.5 4"/></svg></div>
             <div class="lc-name" data-en="Persian / Iranian" data-ar="فارسي / إيراني">Persian / Iranian</div>
           </div>
         </div>
 
         <!-- ASIAN -->
-        <div class="style-section-label" data-en="🌏 Asian" data-ar="🌏 آسيوي">🌏 Asian</div>
+        <div class="style-section-label" data-icon="globe" data-en="Asian" data-ar="آسيوي">Asian</div>
         <div class="layout-grid" style="margin-bottom: 20px;">
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Japanese Japandi interior design zen minimalist natural wood neutral tones">
             <div class="lc-icon">🇯🇵</div>
@@ -1374,7 +1377,7 @@
             <div class="lc-name" data-en="Indian" data-ar="هندي">Indian</div>
           </div>
           <div class="layout-card" onclick="toggleCard(this)" data-prompt="Bali tropical interior design natural materials bamboo plants warm lighting">
-            <div class="lc-icon">🌴</div>
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11c0-4-3-6-8-6 1 4 3 6 8 6z"/><path d="M12 9c0-3.5 2.5-5.5 7-5.5-1 3.5-3 5.5-7 5.5z"/><path d="M12 13c0-3-2-5-6-5 .8 3 2.5 5 6 5z"/></svg></div>
             <div class="lc-name" data-en="Bali / Tropical" data-ar="بالي / استوائي">Bali / Tropical</div>
           </div>
         </div>
@@ -1382,19 +1385,19 @@
         <div class="form-group">
           <label data-en="Preferred Colors" data-ar="الألوان المفضلة">Preferred Colors</label>
           <div class="chips">
-            <div class="chip" onclick="selectColor(this)" data-en="⬛ Neutral/Gray" data-ar="⬛ محايد/رمادي">⬛ Neutral/Gray</div>
-            <div class="chip" onclick="selectColor(this)" data-en="🤎 Warm/Wood" data-ar="🤎 دافئ/خشبي">🤎 Warm/Wood</div>
-            <div class="chip" onclick="selectColor(this)" data-en="🩵 Cool/Blue" data-ar="🩵 بارد/أزرق">🩵 Cool/Blue</div>
-            <div class="chip" onclick="selectColor(this)" data-en="🌸 Pink/Soft" data-ar="🌸 وردي/ناعم">🌸 Pink/Soft</div>
-            <div class="chip" onclick="selectColor(this)" data-en="💚 Green/Natural" data-ar="💚 أخضر/طبيعي">💚 Green/Natural</div>
-            <div class="chip" onclick="selectColor(this)" data-en="🖤 Black/Gold" data-ar="🖤 أسود/ذهبي">🖤 Black/Gold</div>
-            <div class="chip" onclick="selectColor(this)" data-en="🤍 Pure White" data-ar="🤍 أبيض نقي">🤍 Pure White</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchNeutral" data-en="Neutral/Gray" data-ar="محايد/رمادي">Neutral/Gray</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchWarm" data-en="Warm/Wood" data-ar="دافئ/خشبي">Warm/Wood</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchCool" data-en="Cool/Blue" data-ar="بارد/أزرق">Cool/Blue</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchPink" data-en="Pink/Soft" data-ar="وردي/ناعم">Pink/Soft</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchGreen" data-en="Green/Natural" data-ar="أخضر/طبيعي">Green/Natural</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchBlackGold" data-en="Black/Gold" data-ar="أسود/ذهبي">Black/Gold</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchWhite" data-en="Pure White" data-ar="أبيض نقي">Pure White</div>
           </div>
         </div>
 
         <div class="panel-nav">
-          <button class="btn-prev" onclick="prev()" data-ar="→ السابق" data-en="← Back">← Back</button>
-          <button class="btn-next" onclick="next()" data-ar="التالي ←" data-en="Next →">Next →</button>
+          <button class="btn-prev" onclick="prev()" data-icon="arrowLeft" data-ar="السابق" data-en="Back">Back</button>
+          <button class="btn-next" onclick="next()" data-icon="arrowRight" data-icon-pos="after" data-ar="التالي" data-en="Next">Next</button>
         </div>
       </div>
 
@@ -1408,11 +1411,11 @@
           <label data-en="Design Mode" data-ar="نمط التصميم">Design Mode</label>
           <div class="design-count-selector" id="designModeSelector" style="grid-template-columns: repeat(2, 1fr);">
             <div class="count-option selected" onclick="selectDesignMode(this,'redesign')" data-mode="redesign">
-              <div class="count-num" style="font-size:22px;">🎨</div>
+              <div class="count-num" style="font-size:22px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>
               <div class="count-label" data-en="Full Redesign" data-ar="تصميم كامل">Full Redesign</div>
             </div>
             <div class="count-option" onclick="selectDesignMode(this,'rearrange')" data-mode="rearrange">
-              <div class="count-num" style="font-size:22px;">🔄</div>
+              <div class="count-num" style="font-size:22px;"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.8 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg></div>
               <div class="count-label" data-en="Rearrange Only" data-ar="إعادة ترتيب فقط">Rearrange Only</div>
             </div>
           </div>
@@ -1440,7 +1443,7 @@
 
         <!-- ADVANCED OPTIONS -->
         <div class="advanced-box">
-          <div class="advanced-title">⚙️ <span data-ar="خيارات متقدمة" data-en="Advanced Options">Advanced Options</span></div>
+          <div class="advanced-title"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.4-2-3.4-2.3.9a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.5 2.4a7.7 7.7 0 0 0-2.6 1.5l-2.3-.9-2 3.4 2 1.4a7.6 7.6 0 0 0 0 3l-2 1.4 2 3.4 2.3-.9c.8.7 1.6 1.2 2.6 1.5L10 22h4l.5-2.6a7.7 7.7 0 0 0 2.6-1.5l2.3.9 2-3.4z"/></svg> <span data-ar="خيارات متقدمة" data-en="Advanced Options">Advanced Options</span></div>
 
           <!-- NUMBER OF DESIGNS -->
           <div class="form-group" style="margin-bottom: 16px;">
@@ -1478,7 +1481,7 @@
 
           <!-- 360 COMING SOON -->
           <div class="coming-soon-box">
-            <span>🔄</span>
+            <span><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.8-5.6L20 8.5"/><path d="M20 4v4.5h-4.5"/><path d="M20 12a8 8 0 0 1-13.8 5.6L4 15.5"/><path d="M4 20v-4.5h4.5"/></svg></span>
             <div>
               <div style="font-size:13px; font-weight:700;" data-ar="تفاصيل 360°" data-en="360° View">360° View</div>
               <div style="font-size:11px; color:var(--gray);" data-ar="قريباً — تجربة غمر كاملة للغرفة" data-en="Coming soon — full room immersive experience">Coming soon — full room immersive experience</div>
@@ -1488,11 +1491,11 @@
         </div>
 
         <button class="generate-btn" onclick="generate()">
-          <span data-ar="✦ أنشئ تصميمي الآن" data-en="✦ Generate My Design Now">✦ Generate My Design Now</span>
+          <span data-icon="sparkle" data-ar="أنشئ تصميمي الآن" data-en="Generate My Design Now">Generate My Design Now</span>
           <span class="gen-sub" id="genSubText" data-ar="الذكاء الاصطناعي سيولد صورة واقعية لغرفتك" data-en="AI will generate a realistic image of your room">AI will generate a realistic image of your room</span>
         </button>
         <div id="freeTrialBadge" style="text-align:center;margin-top:10px;font-size:12px;color:var(--gold);">
-          ✦ 1 free design included — no credit card needed
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill="currentColor" stroke="none"/></svg> 1 free design included — no credit card needed
         </div>
       </div>
 
@@ -1501,15 +1504,15 @@
     <!-- RESULT -->
     <div class="result-area" id="resultArea">
       <div class="result-header">
-        <div class="result-title" data-ar="✦ تصميمك الجديد" data-en="✦ Your New Design">✦ Your New Design</div>
+        <div class="result-title" data-icon="sparkle" data-ar="تصميمك الجديد" data-en="Your New Design">Your New Design</div>
         <div style="display:flex;align-items:center;gap:10px;">
           <div class="result-badge">AI Generated</div>
-          <button type="button" class="result-clear-btn" onclick="startNewDesign()" data-en="↺ Start New Design" data-ar="↺ تصميم جديد">↺ Start New Design</button>
+          <button type="button" class="result-clear-btn" onclick="startNewDesign()" data-icon="refresh" data-en="Start New Design" data-ar="تصميم جديد">Start New Design</button>
         </div>
       </div>
       <div class="result-img-wrap" id="resultImg">
         <div class="result-placeholder" id="resultPlaceholder">
-          <div class="rp-icon">🎨</div>
+          <div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>
           <p data-ar="جاري توليد تصميمك..." data-en="Generating your design...">Generating your design...</p>
           <small data-ar="يستغرق 15-30 ثانية" data-en="Takes 15-30 seconds">Takes 15-30 seconds</small>
         </div>
@@ -1532,22 +1535,22 @@
   <h2 class="section-title reveal" data-ar="كل شي بمكان واحد" data-en="Everything In One Place">Everything In One Place</h2>
   <div class="features-grid">
     <div class="feat-card reveal">
-      <div class="feat-icon">🤖</div>
+      <div class="feat-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="10" rx="2.5"/><path d="M12 9V5"/><circle cx="12" cy="3.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/><path d="M2 13h3M19 13h3"/></svg></div>
       <div class="feat-title" data-ar="ذكاء اصطناعي متقدم" data-en="Advanced AI">Advanced AI</div>
       <div class="feat-desc" data-ar="تصاميم واقعية فوتوغرافية بناءً على صورة غرفتك الحقيقية وليس قوالب جاهزة" data-en="Photorealistic designs based on your actual room photo, not generic templates">Photorealistic designs based on your actual room photo, not generic templates</div>
     </div>
     <div class="feat-card reveal">
-      <div class="feat-icon">🛋️</div>
+      <div class="feat-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12V9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><rect x="3.5" y="12" width="17" height="6" rx="1.6"/><path d="M4 18v2M20 18v2"/></svg></div>
       <div class="feat-title" data-ar="محلات أثاث قريبة" data-en="Nearby Furniture Stores">Nearby Furniture Stores</div>
       <div class="feat-desc" data-ar="شوفي محلات أثاث حقيقية قريبة منك بالخليج وأوروبا بعد كل تصميم" data-en="Real furniture retailers near you across the Gulf and Europe, shown after every design">Real furniture retailers near you across the Gulf and Europe, shown after every design</div>
     </div>
     <div class="feat-card reveal">
-      <div class="feat-icon">📍</div>
+      <div class="feat-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></div>
       <div class="feat-title" data-ar="دلّك على الخريطة" data-en="Find Them on the Map">Find Them on the Map</div>
       <div class="feat-desc" data-ar="بضغطة وحدة بيفتح خرائط جوجل ويبحث عن المحل قريب منك" data-en="One tap opens Google Maps to search that store near you">One tap opens Google Maps to search that store near you</div>
     </div>
     <div class="feat-card reveal">
-      <div class="feat-icon">🌍</div>
+      <div class="feat-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M4 12h16M12 3.8c2.6 2.4 2.6 14 0 16.4M12 3.8c-2.6 2.4-2.6 14 0 16.4"/><path d="M5.5 7h13M5.5 17h13"/></svg></div>
       <div class="feat-title" data-ar="8 لغات عالمية" data-en="8 Global Languages" data-de="8 Weltsprachen" data-es="8 Idiomas globales">8 Global Languages</div>
       <div class="feat-desc" data-ar="عربي · إنجليزي · ألماني · إسباني · تركي · فرنسي · إيطالي · روسي — أول منصة تصميم داخلي بالذكاء الاصطناعي تدعم هذه اللغات الثماني" data-en="Arabic · English · German · Spanish · Turkish · French · Italian · Russian — first AI interior design platform supporting all eight languages">Arabic · English · German · Spanish · Turkish · French · Italian · Russian</div>
     </div>
@@ -1556,7 +1559,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">✦ Lamsa</div>
+  <div class="footer-logo"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill="currentColor" stroke="none"/></svg> Lamsa</div>
   <p data-ar="صمّم بيتك بلمستك الخاصة · مدعوم بالذكاء الاصطناعي" data-en="Design your home with your personal touch · Powered by AI" data-de="Gestalte dein Zuhause · KI-gestützt" data-es="Diseña tu hogar · IA">Design your home with your personal touch · Powered by AI</p>
   <div class="footer-links">
     <a href="#" onclick="openModal('privacy')" class="footer-link">
@@ -1638,18 +1641,18 @@
       'North Window': 'Nordfenster', 'South Window': 'Südfenster',
       'East Window': 'Ostfenster', 'West Window': 'Westfenster',
       'North Door': 'Nordtür', 'South Door': 'Südtür',
-      '⬛ Neutral/Gray': '⬛ Neutral/Grau', '🤎 Warm/Wood': '🤎 Warm/Holz',
-      '🩵 Cool/Blue': '🩵 Kühl/Blau', '🌸 Pink/Soft': '🌸 Rosa/Sanft',
-      '💚 Green/Natural': '💚 Grün/Natürlich', '🖤 Black/Gold': '🖤 Schwarz/Gold', '🤍 Pure White': '🤍 Reinweiß',
+      'Neutral/Gray': 'Neutral/Grau', 'Warm/Wood': 'Warm/Holz',
+      'Cool/Blue': 'Kühl/Blau', 'Pink/Soft': 'Rosa/Sanft',
+      'Green/Natural': 'Grün/Natürlich', 'Black/Gold': 'Schwarz/Gold', 'Pure White': 'Reinweiß',
       'Bed & Sleep': 'Bett & Schlafen', 'Storage': 'Aufbewahrung', 'Lighting': 'Beleuchtung',
       'Decor': 'Dekoration', 'Seating': 'Sitzgelegenheit',
-      '🛏️ Bed': '🛏️ Bett', '🗄️ Wardrobe': '🗄️ Schrank', '🪑 Desk Chair': '🪑 Bürostuhl',
-      '📚 Bookshelf': '📚 Regal', '🛋️ Sofa': '🛋️ Sofa', '🪞 Mirror': '🪞 Spiegel',
-      '💡 Special Lighting': '💡 Spezialbeleuchtung', '🧸 Play Area': '🧸 Spielbereich',
+      'Bed': 'Bett', 'Wardrobe': 'Schrank', 'Desk Chair': 'Bürostuhl',
+      'Bookshelf': 'Regal', 'Sofa': 'Sofa', 'Mirror': 'Spiegel',
+      'Special Lighting': 'Spezialbeleuchtung', 'Play Area': 'Spielbereich',
       'North Wall': 'Nordwand', 'South Wall': 'Südwand',
       'East Wall': 'Ostwand', 'West Wall': 'Westwand', 'Center of Room': 'Zimmermitte',
-      '👶 Baby': '👶 Baby', '👧 Kids (3-8)': '👧 Kinder (3-8)', '🧒 Teens': '🧒 Teenager',
-      '👨 Adult': '👨 Erwachsener', '👫 Couple': '👫 Paar', '👴 Elderly': '👴 Senioren',
+      'Baby': 'Baby', 'Kids (3-8)': 'Kinder (3-8)', 'Teens': 'Teenager',
+      'Adult': 'Erwachsener', 'Couple': 'Paar', 'Elderly': 'Senioren',
       'Modern': 'Modern', 'Minimal': 'Minimal', 'Industrial': 'Industriell', 'Bohemian': 'Böhmisch',
       'Scandinavian': 'Skandinavisch', 'French Classic': 'Französisch Klassisch',
       'Italian Luxury': 'Italienisch Luxus', 'Spanish / Mediterranean': 'Spanisch / Mediterran',
@@ -1658,8 +1661,8 @@
       'Turkish / Ottoman': 'Türkisch / Osmanisch', 'Persian / Iranian': 'Persisch / Iranisch',
       'Japanese / Zen': 'Japanisch / Zen', 'Classic Chinese': 'Klassisch Chinesisch',
       'Indian': 'Indisch', 'Bali / Tropical': 'Bali / Tropisch',
-      '🌍 Global / Modern': '🌍 Global / Modern', '🇪🇺 European': '🇪🇺 Europäisch',
-      '🕌 Oriental': '🕌 Orientalisch', '🌏 Asian': '🌏 Asiatisch',
+      'Global / Modern': 'Global / Modern', '🇪🇺 European': '🇪🇺 Europäisch',
+      'Oriental': 'Orientalisch', 'Asian': 'Asiatisch',
       '1 Credit': '1 Kredit', '2 Credits': '2 Kredite', '3 Credits': '3 Kredite',
       'Design': 'Design', 'Designs': 'Designs',
       'Advanced Options': 'Erweiterte Optionen', 'Number of Designs': 'Anzahl der Designs',
@@ -1671,7 +1674,7 @@
       'Up to 5 photos · PNG, JPG, HEIC · Max 10MB each': 'Bis zu 5 Fotos · Max. 10MB pro Foto',
       'Front view': 'Vorderansicht', 'Side view': 'Seitenansicht',
       'Corner view': 'Eckansicht', 'Window side': 'Fensterseite',
-      'Next →': 'Weiter →', '← Back': '← Zurück',
+      'Next': 'Weiter', 'Back': 'Zurück',
       'Room Information': 'Zimmerinformationen',
       'Enter space details for a precise design that fits your room dimensions': 'Raumdetails für ein präzises Design eingeben',
       'Who Will Use The Room?': 'Wer nutzt das Zimmer?',
@@ -1685,9 +1688,9 @@
       'Specify where you want each piece and what furniture you need': 'Bestimmen Sie wo jedes Möbelstück stehen soll',
       'Design Mode': 'Design-Modus', 'Full Redesign': 'Komplettes Redesign', 'Rearrange Only': 'Nur neu anordnen',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Nur neu anordnen behält Ihre vorhandenen Möbel exakt wie sie sind (gleiche Farbe, Material und Größe) und positioniert sie nur neu für eine bessere Raumaufteilung. Stil-, Farb- und neue Möbelauswahlen unten werden in diesem Modus ignoriert.',
-      '✦ Generate My Design Now': '✦ Design jetzt erstellen',
+      'Generate My Design Now': 'Design jetzt erstellen',
       'AI will generate a realistic image of your room': 'Die KI erstellt ein realistisches Bild Ihres Zimmers',
-      '✦ Your New Design': '✦ Ihr neues Design',
+      'Your New Design': 'Ihr neues Design',
       'Generating your design...': 'Ihr Design wird erstellt...',
       'Takes 15-30 seconds': 'Dauert 15-30 Sekunden',
       'Euro': 'Euro', 'Dollar': 'Dollar', 'Pound': 'Pfund',
@@ -1739,7 +1742,7 @@
       'Arabic · English · German · Spanish · Turkish · French · Italian · Russian': 'Arabe · Ingles · Aleman · Espanol · Turco · Frances · Italiano · Ruso',
       'Design your home with your personal touch · Powered by AI': 'Disena tu hogar con tu toque · IA',
       'Privacy Policy': 'Privacidad', 'Terms of Service': 'Terminos de uso', 'Cookie Policy': 'Cookies',
-      'Room Type': 'Tipo de habitación', 'Area (sqm)': 'Área (m²)', 'Length (m)': 'Largo (m)', 'Width (m)': 'Ancho (m)', 'Window & Door Location': 'Ventanas y puertas', 'Number of People': 'Número de personas', 'Bedroom': 'Dormitorio', 'Living Room': 'Sala de estar', 'Kitchen': 'Cocina', 'Kids Room': 'Cuarto de niños', 'Home Office': 'Oficina', 'Dining Room': 'Comedor', 'Bathroom': 'Baño', 'None': 'Ninguno', 'North Window': 'Ventana norte', 'South Window': 'Ventana sur', 'East Window': 'Ventana este', 'West Window': 'Ventana oeste', 'North Door': 'Puerta norte', 'South Door': 'Puerta sur', '🛏️ Bed': '🛏️ Cama', '🗄️ Wardrobe': '🗄️ Armario', '📚 Bookshelf': '📚 Estante', '🛋️ Sofa': '🛋️ Sofá', '🪞 Mirror': '🪞 Espejo', '🧸 Play Area': '🧸 Zona de juegos', 'North Wall': 'Pared norte', 'South Wall': 'Pared sur', 'East Wall': 'Pared este', 'West Wall': 'Pared oeste', 'Center of Room': 'Centro de la habitación', 'Modern': 'Moderno', 'Minimal': 'Minimalista', 'Scandinavian': 'Escandinavo', 'Moroccan': 'Marroquí', 'Japanese / Zen': 'Japonés / Zen', 'Room Information': 'Información de la habitación', 'Who Will Use The Room?': 'Quién usará la habitación', 'Furniture Budget': 'Presupuesto de muebles', 'Preferred Style': 'Estilo preferido', 'Furniture Placement': 'Distribución de muebles', '✦ Generate My Design Now': '✦ Crear mi diseño ahora', '✦ Your New Design': '✦ Tu nuevo diseño', 'Generating your design...': 'Generando tu diseño...', 'Takes 15-30 seconds': 'Tarda 15-30 segundos',
+      'Room Type': 'Tipo de habitación', 'Area (sqm)': 'Área (m²)', 'Length (m)': 'Largo (m)', 'Width (m)': 'Ancho (m)', 'Window & Door Location': 'Ventanas y puertas', 'Number of People': 'Número de personas', 'Bedroom': 'Dormitorio', 'Living Room': 'Sala de estar', 'Kitchen': 'Cocina', 'Kids Room': 'Cuarto de niños', 'Home Office': 'Oficina', 'Dining Room': 'Comedor', 'Bathroom': 'Baño', 'None': 'Ninguno', 'North Window': 'Ventana norte', 'South Window': 'Ventana sur', 'East Window': 'Ventana este', 'West Window': 'Ventana oeste', 'North Door': 'Puerta norte', 'South Door': 'Puerta sur', 'Bed': 'Cama', 'Wardrobe': 'Armario', 'Bookshelf': 'Estante', 'Sofa': 'Sofá', 'Mirror': 'Espejo', 'Play Area': 'Zona de juegos', 'North Wall': 'Pared norte', 'South Wall': 'Pared sur', 'East Wall': 'Pared este', 'West Wall': 'Pared oeste', 'Center of Room': 'Centro de la habitación', 'Modern': 'Moderno', 'Minimal': 'Minimalista', 'Scandinavian': 'Escandinavo', 'Moroccan': 'Marroquí', 'Japanese / Zen': 'Japonés / Zen', 'Room Information': 'Información de la habitación', 'Who Will Use The Room?': 'Quién usará la habitación', 'Furniture Budget': 'Presupuesto de muebles', 'Preferred Style': 'Estilo preferido', 'Furniture Placement': 'Distribución de muebles', 'Generate My Design Now': 'Crear mi diseño ahora', 'Your New Design': 'Tu nuevo diseño', 'Generating your design...': 'Generando tu diseño...', 'Takes 15-30 seconds': 'Tarda 15-30 segundos',
       'Design Mode': 'Modo de diseño', 'Full Redesign': 'Rediseño completo', 'Rearrange Only': 'Solo reorganizar',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Solo reorganizar mantiene tus muebles actuales exactamente igual (mismo color, material y tamaño) y solo los reposiciona para una mejor distribución. El estilo, los colores y la selección de muebles nuevos de abajo se ignoran en este modo.',
       'Standard Bed': 'Cama estándar', 'Bunk Bed': 'Litera', 'Storage Bed': 'Cama con almacenaje',
@@ -1784,7 +1787,7 @@
       'Arabic · English · German · Spanish · Turkish · French · Italian · Russian': 'Arapca · Ingilizce · Almanca · Ispanyolca · Turkce · Fransizca · Italyanca · Rusca',
       'Design your home with your personal touch · Powered by AI': 'Evinizi kendi dokunusunuzla tasarlayin · Yapay Zeka',
       'Privacy Policy': 'Gizlilik', 'Terms of Service': 'Kullanim Kosullari', 'Cookie Policy': 'Cerez Politikasi',
-      'Room Type': 'Oda tipi', 'Area (sqm)': 'Alan (m²)', 'Length (m)': 'Uzunluk (m)', 'Width (m)': 'Genislik (m)', 'Window & Door Location': 'Pencere ve kapi konumu', 'Number of People': 'Kisi sayisi', 'Bedroom': 'Yatak odasi', 'Living Room': 'Oturma odasi', 'Kitchen': 'Mutfak', 'Kids Room': 'Cocuk odasi', 'Home Office': 'Ofis', 'Dining Room': 'Yemek odasi', 'Bathroom': 'Banyo', 'None': 'Yok', 'North Window': 'Kuzey pencere', 'South Window': 'Guney pencere', 'East Window': 'Dogu pencere', 'West Window': 'Bati pencere', 'North Door': 'Kuzey kapi', 'South Door': 'Guney kapi', '🛏️ Bed': '🛏️ Yatak', '🗄️ Wardrobe': '🗄️ Dolap', '📚 Bookshelf': '📚 Kitaplik', '🛋️ Sofa': '🛋️ Kanepe', '🪞 Mirror': '🪞 Ayna', '🧸 Play Area': '🧸 Oyun alani', 'North Wall': 'Kuzey duvar', 'South Wall': 'Guney duvar', 'East Wall': 'Dogu duvar', 'West Wall': 'Bati duvar', 'Center of Room': 'Oda merkezi', 'Modern': 'Modern', 'Minimal': 'Minimal', 'Scandinavian': 'Iskandinavya', 'Moroccan': 'Fas tarzi', 'Japanese / Zen': 'Japon / Zen', 'Room Information': 'Oda bilgileri', 'Who Will Use The Room?': 'Odayi kim kullanacak', 'Furniture Budget': 'Mobilya butcesi', 'Preferred Style': 'Tercih edilen stil', 'Furniture Placement': 'Mobilya yerlestirme', '✦ Generate My Design Now': '✦ Tasarimimi olustur', '✦ Your New Design': '✦ Yeni tasariminiz', 'Generating your design...': 'Tasariminiz olusturuluyor...', 'Takes 15-30 seconds': '15-30 saniye surer',
+      'Room Type': 'Oda tipi', 'Area (sqm)': 'Alan (m²)', 'Length (m)': 'Uzunluk (m)', 'Width (m)': 'Genislik (m)', 'Window & Door Location': 'Pencere ve kapi konumu', 'Number of People': 'Kisi sayisi', 'Bedroom': 'Yatak odasi', 'Living Room': 'Oturma odasi', 'Kitchen': 'Mutfak', 'Kids Room': 'Cocuk odasi', 'Home Office': 'Ofis', 'Dining Room': 'Yemek odasi', 'Bathroom': 'Banyo', 'None': 'Yok', 'North Window': 'Kuzey pencere', 'South Window': 'Guney pencere', 'East Window': 'Dogu pencere', 'West Window': 'Bati pencere', 'North Door': 'Kuzey kapi', 'South Door': 'Guney kapi', 'Bed': 'Yatak', 'Wardrobe': 'Dolap', 'Bookshelf': 'Kitaplik', 'Sofa': 'Kanepe', 'Mirror': 'Ayna', 'Play Area': 'Oyun alani', 'North Wall': 'Kuzey duvar', 'South Wall': 'Guney duvar', 'East Wall': 'Dogu duvar', 'West Wall': 'Bati duvar', 'Center of Room': 'Oda merkezi', 'Modern': 'Modern', 'Minimal': 'Minimal', 'Scandinavian': 'Iskandinavya', 'Moroccan': 'Fas tarzi', 'Japanese / Zen': 'Japon / Zen', 'Room Information': 'Oda bilgileri', 'Who Will Use The Room?': 'Odayi kim kullanacak', 'Furniture Budget': 'Mobilya butcesi', 'Preferred Style': 'Tercih edilen stil', 'Furniture Placement': 'Mobilya yerlestirme', 'Generate My Design Now': 'Tasarimimi olustur', 'Your New Design': 'Yeni tasariminiz', 'Generating your design...': 'Tasariminiz olusturuluyor...', 'Takes 15-30 seconds': '15-30 saniye surer',
       'Design Mode': 'Tasarim Modu', 'Full Redesign': 'Tam Yeniden Tasarim', 'Rearrange Only': 'Sadece Yeniden Duzenle',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Sadece Yeniden Duzenle, mevcut mobilyalarinizi oldugu gibi (ayni renk, malzeme ve boyut) korur ve sadece daha iyi bir yerlesim icin yeniden konumlandirir. Bu modda asagidaki stil, renk ve yeni mobilya secimleri dikkate alinmaz.',
       'Standard Bed': 'Standart yatak', 'Bunk Bed': 'Ranzali yatak', 'Storage Bed': 'Depolamali yatak',
@@ -1829,7 +1832,7 @@
       'Arabic · English · German · Spanish · Turkish · French · Italian · Russian': 'Arabe · Anglais · Allemand · Espagnol · Turc · Francais · Italien · Russe',
       'Design your home with your personal touch · Powered by AI': 'Concevez votre maison avec votre touche · IA',
       'Privacy Policy': 'Confidentialite', 'Terms of Service': 'Conditions', 'Cookie Policy': 'Cookies',
-      'Room Type': 'Type de piece', 'Area (sqm)': 'Surface (m²)', 'Length (m)': 'Longueur (m)', 'Width (m)': 'Largeur (m)', 'Window & Door Location': 'Fenetres et portes', 'Number of People': 'Nombre de personnes', 'Bedroom': 'Chambre', 'Living Room': 'Salon', 'Kitchen': 'Cuisine', 'Kids Room': 'Chambre enfants', 'Home Office': 'Bureau', 'Dining Room': 'Salle a manger', 'Bathroom': 'Salle de bain', 'None': 'Aucun', 'North Window': 'Fenetre nord', 'South Window': 'Fenetre sud', 'East Window': 'Fenetre est', 'West Window': 'Fenetre ouest', 'North Door': 'Porte nord', 'South Door': 'Porte sud', '🛏️ Bed': '🛏️ Lit', '🗄️ Wardrobe': '🗄️ Armoire', '📚 Bookshelf': '📚 Etagere', '🛋️ Sofa': '🛋️ Canape', '🪞 Mirror': '🪞 Miroir', '🧸 Play Area': '🧸 Espace jeux', 'North Wall': 'Mur nord', 'South Wall': 'Mur sud', 'East Wall': 'Mur est', 'West Wall': 'Mur ouest', 'Center of Room': 'Centre de la piece', 'Modern': 'Moderne', 'Minimal': 'Minimaliste', 'Scandinavian': 'Scandinave', 'Moroccan': 'Marocain', 'Japanese / Zen': 'Japonais / Zen', 'Room Information': 'Informations sur la piece', 'Who Will Use The Room?': 'Qui utilisera la piece', 'Furniture Budget': 'Budget meubles', 'Preferred Style': 'Style prefere', 'Furniture Placement': 'Disposition des meubles', '✦ Generate My Design Now': '✦ Creer mon design', '✦ Your New Design': '✦ Votre nouveau design', 'Generating your design...': 'Generation en cours...', 'Takes 15-30 seconds': 'Prend 15-30 secondes',
+      'Room Type': 'Type de piece', 'Area (sqm)': 'Surface (m²)', 'Length (m)': 'Longueur (m)', 'Width (m)': 'Largeur (m)', 'Window & Door Location': 'Fenetres et portes', 'Number of People': 'Nombre de personnes', 'Bedroom': 'Chambre', 'Living Room': 'Salon', 'Kitchen': 'Cuisine', 'Kids Room': 'Chambre enfants', 'Home Office': 'Bureau', 'Dining Room': 'Salle a manger', 'Bathroom': 'Salle de bain', 'None': 'Aucun', 'North Window': 'Fenetre nord', 'South Window': 'Fenetre sud', 'East Window': 'Fenetre est', 'West Window': 'Fenetre ouest', 'North Door': 'Porte nord', 'South Door': 'Porte sud', 'Bed': 'Lit', 'Wardrobe': 'Armoire', 'Bookshelf': 'Etagere', 'Sofa': 'Canape', 'Mirror': 'Miroir', 'Play Area': 'Espace jeux', 'North Wall': 'Mur nord', 'South Wall': 'Mur sud', 'East Wall': 'Mur est', 'West Wall': 'Mur ouest', 'Center of Room': 'Centre de la piece', 'Modern': 'Moderne', 'Minimal': 'Minimaliste', 'Scandinavian': 'Scandinave', 'Moroccan': 'Marocain', 'Japanese / Zen': 'Japonais / Zen', 'Room Information': 'Informations sur la piece', 'Who Will Use The Room?': 'Qui utilisera la piece', 'Furniture Budget': 'Budget meubles', 'Preferred Style': 'Style prefere', 'Furniture Placement': 'Disposition des meubles', 'Generate My Design Now': 'Creer mon design', 'Your New Design': 'Votre nouveau design', 'Generating your design...': 'Generation en cours...', 'Takes 15-30 seconds': 'Prend 15-30 secondes',
       'Design Mode': 'Mode de conception', 'Full Redesign': 'Refonte complète', 'Rearrange Only': 'Réarranger seulement',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Réarranger seulement conserve vos meubles actuels exactement tels quels (même couleur, matériau et taille) et les repositionne seulement pour un meilleur agencement. Le style, les couleurs et les nouvelles sélections de meubles ci-dessous sont ignorés dans ce mode.',
       'Standard Bed': 'Lit standard', 'Bunk Bed': 'Lits superposes', 'Storage Bed': 'Lit avec rangement',
@@ -1874,7 +1877,7 @@
       'Arabic · English · German · Spanish · Turkish · French · Italian · Russian': 'Arabo · Inglese · Tedesco · Spagnolo · Turco · Francese · Italiano · Russo',
       'Design your home with your personal touch · Powered by AI': 'Progetta la tua casa con il tuo tocco · IA',
       'Privacy Policy': 'Privacy', 'Terms of Service': 'Termini', 'Cookie Policy': 'Cookie',
-      'Room Type': 'Tipo di stanza', 'Area (sqm)': 'Area (m²)', 'Length (m)': 'Lunghezza (m)', 'Width (m)': 'Larghezza (m)', 'Window & Door Location': 'Finestre e porte', 'Number of People': 'Numero di persone', 'Bedroom': 'Camera da letto', 'Living Room': 'Soggiorno', 'Kitchen': 'Cucina', 'Kids Room': 'Camera bambini', 'Home Office': 'Ufficio', 'Dining Room': 'Sala da pranzo', 'Bathroom': 'Bagno', 'None': 'Nessuno', 'North Window': 'Finestra nord', 'South Window': 'Finestra sud', 'East Window': 'Finestra est', 'West Window': 'Finestra ovest', 'North Door': 'Porta nord', 'South Door': 'Porta sud', '🛏️ Bed': '🛏️ Letto', '🗄️ Wardrobe': '🗄️ Armadio', '📚 Bookshelf': '📚 Libreria', '🛋️ Sofa': '🛋️ Divano', '🪞 Mirror': '🪞 Specchio', '🧸 Play Area': '🧸 Area giochi', 'North Wall': 'Parete nord', 'South Wall': 'Parete sud', 'East Wall': 'Parete est', 'West Wall': 'Parete ovest', 'Center of Room': 'Centro stanza', 'Modern': 'Moderno', 'Minimal': 'Minimale', 'Scandinavian': 'Scandinavo', 'Moroccan': 'Marocchino', 'Japanese / Zen': 'Giapponese / Zen', 'Room Information': 'Informazioni stanza', 'Who Will Use The Room?': 'Chi usera la stanza', 'Furniture Budget': 'Budget mobili', 'Preferred Style': 'Stile preferito', 'Furniture Placement': 'Disposizione mobili', '✦ Generate My Design Now': '✦ Crea il mio design', '✦ Your New Design': '✦ Il tuo nuovo design', 'Generating your design...': 'Generazione in corso...', 'Takes 15-30 seconds': 'Richiede 15-30 secondi',
+      'Room Type': 'Tipo di stanza', 'Area (sqm)': 'Area (m²)', 'Length (m)': 'Lunghezza (m)', 'Width (m)': 'Larghezza (m)', 'Window & Door Location': 'Finestre e porte', 'Number of People': 'Numero di persone', 'Bedroom': 'Camera da letto', 'Living Room': 'Soggiorno', 'Kitchen': 'Cucina', 'Kids Room': 'Camera bambini', 'Home Office': 'Ufficio', 'Dining Room': 'Sala da pranzo', 'Bathroom': 'Bagno', 'None': 'Nessuno', 'North Window': 'Finestra nord', 'South Window': 'Finestra sud', 'East Window': 'Finestra est', 'West Window': 'Finestra ovest', 'North Door': 'Porta nord', 'South Door': 'Porta sud', 'Bed': 'Letto', 'Wardrobe': 'Armadio', 'Bookshelf': 'Libreria', 'Sofa': 'Divano', 'Mirror': 'Specchio', 'Play Area': 'Area giochi', 'North Wall': 'Parete nord', 'South Wall': 'Parete sud', 'East Wall': 'Parete est', 'West Wall': 'Parete ovest', 'Center of Room': 'Centro stanza', 'Modern': 'Moderno', 'Minimal': 'Minimale', 'Scandinavian': 'Scandinavo', 'Moroccan': 'Marocchino', 'Japanese / Zen': 'Giapponese / Zen', 'Room Information': 'Informazioni stanza', 'Who Will Use The Room?': 'Chi usera la stanza', 'Furniture Budget': 'Budget mobili', 'Preferred Style': 'Stile preferito', 'Furniture Placement': 'Disposizione mobili', 'Generate My Design Now': 'Crea il mio design', 'Your New Design': 'Il tuo nuovo design', 'Generating your design...': 'Generazione in corso...', 'Takes 15-30 seconds': 'Richiede 15-30 secondi',
       'Design Mode': 'Modalità di design', 'Full Redesign': 'Redesign completo', 'Rearrange Only': 'Solo riorganizzazione',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Solo riorganizzazione mantiene i tuoi mobili attuali esattamente come sono (stesso colore, materiale e dimensione) e li riposiziona solo per una disposizione migliore. Stile, colori e le nuove selezioni di mobili qui sotto vengono ignorati in questa modalità.',
       'Standard Bed': 'Letto standard', 'Bunk Bed': 'Letto a castello', 'Storage Bed': 'Letto con contenitore',
@@ -1919,7 +1922,7 @@
       'Arabic · English · German · Spanish · Turkish · French · Italian · Russian': 'Arabskiy · Angliyskiy · Nemetskiy · Ispanskiy · Turetskiy · Frantsuzskiy · Italyanskiy · Russkiy',
       'Design your home with your personal touch · Powered by AI': 'Oformite dom po-svoyemu · II',
       'Privacy Policy': 'Konfidentsialnost', 'Terms of Service': 'Usloviya', 'Cookie Policy': 'Cookie',
-      'Room Type': 'Tip komnaty', 'Area (sqm)': 'Ploshhad (kv.m)', 'Length (m)': 'Dlina (m)', 'Width (m)': 'Shirina (m)', 'Window & Door Location': 'Okna i dveri', 'Number of People': 'Kolichestvo lyudej', 'Bedroom': 'Spalnya', 'Living Room': 'Gostinaya', 'Kitchen': 'Kuxnya', 'Kids Room': 'Detskaya', 'Home Office': 'Kabinet', 'Dining Room': 'Stolovaya', 'Bathroom': 'Vanna komnata', 'None': 'Net', 'North Window': 'Severnoye okno', 'South Window': 'Yuzhnoye okno', 'East Window': 'Vostochnoye okno', 'West Window': 'Zapadnoye okno', 'North Door': 'Severnaya dver', 'South Door': 'Yuzhnaya dver', '🛏️ Bed': '🛏️ Krovat', '🗄️ Wardrobe': '🗄️ Shkaf', '📚 Bookshelf': '📚 Polka', '🛋️ Sofa': '🛋️ Divan', '🪞 Mirror': '🪞 Zerkalo', '🧸 Play Area': '🧸 Igrovaya zona', 'North Wall': 'Severnaya stena', 'South Wall': 'Yuzhnaya stena', 'East Wall': 'Vostochnaya stena', 'West Wall': 'Zapadnaya stena', 'Center of Room': 'Centr komnaty', 'Modern': 'Sovremennyj', 'Minimal': 'Minimalnyj', 'Scandinavian': 'Skandinavskij', 'Moroccan': 'Marokanskij', 'Japanese / Zen': 'Yaponskij / Zen', 'Room Information': 'Informaciya o komnate', 'Who Will Use The Room?': 'Kto budet ispolzovat komnatu', 'Furniture Budget': 'Byudzhet na mebel', 'Preferred Style': 'Predpochtitaemyj stil', 'Furniture Placement': 'Razmeshcheniye mebeli', '✦ Generate My Design Now': '✦ Sozdat moj dizajn', '✦ Your New Design': '✦ Vash novyj dizajn', 'Generating your design...': 'Dizajn sozdaetsya...', 'Takes 15-30 seconds': 'Zanimaet 15-30 sekund',
+      'Room Type': 'Tip komnaty', 'Area (sqm)': 'Ploshhad (kv.m)', 'Length (m)': 'Dlina (m)', 'Width (m)': 'Shirina (m)', 'Window & Door Location': 'Okna i dveri', 'Number of People': 'Kolichestvo lyudej', 'Bedroom': 'Spalnya', 'Living Room': 'Gostinaya', 'Kitchen': 'Kuxnya', 'Kids Room': 'Detskaya', 'Home Office': 'Kabinet', 'Dining Room': 'Stolovaya', 'Bathroom': 'Vanna komnata', 'None': 'Net', 'North Window': 'Severnoye okno', 'South Window': 'Yuzhnoye okno', 'East Window': 'Vostochnoye okno', 'West Window': 'Zapadnoye okno', 'North Door': 'Severnaya dver', 'South Door': 'Yuzhnaya dver', 'Bed': 'Krovat', 'Wardrobe': 'Shkaf', 'Bookshelf': 'Polka', 'Sofa': 'Divan', 'Mirror': 'Zerkalo', 'Play Area': 'Igrovaya zona', 'North Wall': 'Severnaya stena', 'South Wall': 'Yuzhnaya stena', 'East Wall': 'Vostochnaya stena', 'West Wall': 'Zapadnaya stena', 'Center of Room': 'Centr komnaty', 'Modern': 'Sovremennyj', 'Minimal': 'Minimalnyj', 'Scandinavian': 'Skandinavskij', 'Moroccan': 'Marokanskij', 'Japanese / Zen': 'Yaponskij / Zen', 'Room Information': 'Informaciya o komnate', 'Who Will Use The Room?': 'Kto budet ispolzovat komnatu', 'Furniture Budget': 'Byudzhet na mebel', 'Preferred Style': 'Predpochtitaemyj stil', 'Furniture Placement': 'Razmeshcheniye mebeli', 'Generate My Design Now': 'Sozdat moj dizajn', 'Your New Design': 'Vash novyj dizajn', 'Generating your design...': 'Dizajn sozdaetsya...', 'Takes 15-30 seconds': 'Zanimaet 15-30 sekund',
       'Design Mode': 'Rezhim dizayna', 'Full Redesign': 'Polnyj redizajn', 'Rearrange Only': 'Tolko pereraspolozhenie',
       'Rearrange Only keeps your existing furniture exactly as-is and only repositions it for a better layout. Style, colors and new furniture selections below are ignored in this mode.': 'Rezhim "Tolko pereraspolozhenie" sokhranyaet vashu tekushchuyu mebel tochno takoy zhe (tot zhe tsvet, material i razmer) i tolko izmenyaet yeyo raspolozheniye dlya luchshey planirovki. Stil, tsveta i vybor novoy mebeli nizhe v etom rezhime ignoriruyutsya.',
       'Standard Bed': 'Obychnaya krovat', 'Bunk Bed': 'Yarusnaya krovat', 'Storage Bed': 'Krovat s khranilishchem',
@@ -1968,8 +1971,8 @@
       'Saudi Riyal': 'ريال سعودي', 'UAE Dirham': 'درهم إماراتي', 'Kuwaiti Dinar': 'دينار كويتي',
       'Qatari Riyal': 'ريال قطري', 'Omani Riyal': 'ريال عُماني', 'Bahraini Dinar': 'دينار بحريني',
       'Syrian Pound': 'ليرة سورية', 'Lebanese Pound': 'ليرة لبنانية', 'Egyptian Pound': 'جنيه مصري',
-      '🌍 Global / Modern': '🌍 عالمي / حديث', '🇪🇺 European': '🇪🇺 أوروبي',
-      '🕌 Oriental': '🕌 شرقي', '🌏 Asian': '🌏 آسيوي',
+      'Global / Modern': 'عالمي / حديث', '🇪🇺 European': '🇪🇺 أوروبي',
+      'Oriental': 'شرقي', 'Asian': 'آسيوي',
       'Modern': 'عصري', 'Minimal': 'مينيمال', 'Industrial': 'صناعي', 'Bohemian': 'بوهيمي',
       'Scandinavian': 'سكاندنافي', 'French Classic': 'فرنسي كلاسيكي', 'Italian Luxury': 'إيطالي فاخر',
       'Spanish / Mediterranean': 'إسباني / متوسطي', 'Victorian / British': 'فيكتوري / بريطاني',
@@ -1987,8 +1990,8 @@
       '360° View': 'تفاصيل 360°',
       'Coming soon — full room immersive experience': 'قريباً — تجربة غمر كاملة للغرفة',
       'Soon': 'قريباً',
-      '👶 Baby': '👶 رضيع', '👧 Kids (3-8)': '👧 أطفال (3-8)', '🧒 Teens': '🧒 مراهقون',
-      '👨 Adult': '👨 بالغ', '👫 Couple': '👫 زوجان', '👴 Elderly': '👴 كبار السن',
+      'Baby': 'رضيع', 'Kids (3-8)': 'أطفال (3-8)', 'Teens': 'مراهقون',
+      'Adult': 'بالغ', 'Couple': 'زوجان', 'Elderly': 'كبار السن',
       'Room Type': 'نوع الغرفة', 'Area (sqm)': 'المساحة (م²)', 'Length (m)': 'الطول (م)', 'Width (m)': 'العرض (م)',
       'Window & Door Location': 'موقع النافذة والباب', 'Number of People': 'عدد الأشخاص',
       'Special Needs': 'احتياجات خاصة', 'Additional Notes': 'ملاحظات إضافية',
@@ -2016,7 +2019,7 @@
       'Up to 5 photos · PNG, JPG, HEIC · Max 10MB each': 'حتى 5 صور · PNG, JPG, HEIC · 10MB لكل صورة',
       'Front view': 'صورة أمامية', 'Side view': 'صورة جانبية',
       'Corner view': 'صورة من الزاوية', 'Window side': 'جهة النافذة',
-      'Next →': 'التالي ←', '← Back': '→ السابق',
+      'Next': 'التالي', 'Back': 'السابق',
       'Room Information': 'معلومات الغرفة',
       'Enter space details for a precise design that fits your room dimensions': 'أدخل تفاصيل المساحة لتصميم دقيق',
       'Who Will Use The Room?': 'من سيسكن الغرفة؟',
@@ -2028,9 +2031,9 @@
       'Choose the overall design style — you can pick more than one': 'اختر طابع التصميم — ممكن تختار أكثر من واحد',
       'Furniture Placement': 'توزيع الأثاث',
       'Specify where you want each piece and what furniture you need': 'حدد أين تريد وضع كل قطعة',
-      '✦ Generate My Design Now': '✦ أنشئ تصميمي الآن',
+      'Generate My Design Now': 'أنشئ تصميمي الآن',
       'AI will generate a realistic image of your room': 'الذكاء الاصطناعي سيولد صورة واقعية لغرفتك',
-      '✦ Your New Design': '✦ تصميمك الجديد',
+      'Your New Design': 'تصميمك الجديد',
       'Generating your design...': 'جاري توليد تصميمك...',
       'Takes 15-30 seconds': 'يستغرق 15-30 ثانية',
     }
@@ -2070,12 +2073,21 @@
 
     // Translate ALL elements that have data-en and data-ar
     document.querySelectorAll('[data-en][data-ar]').forEach(function(el) {
+      var text;
       if (lang === 'ar') {
-        el.textContent = el.getAttribute('data-ar');
+        text = el.getAttribute('data-ar');
       } else {
         var enVal = el.getAttribute('data-en');
         var t = T[lang];
-        el.textContent = (t && t[enVal]) ? t[enVal] : enVal;
+        text = (t && t[enVal]) ? t[enVal] : enVal;
+      }
+      var iconKey = el.getAttribute('data-icon');
+      if (iconKey && window.icon) {
+        var iconExtraClass = (iconKey === 'arrowLeft' || iconKey === 'arrowRight') ? 'rtl-flip' : '';
+        var iconMarkup = window.icon(iconKey, iconExtraClass);
+        el.innerHTML = (el.getAttribute('data-icon-pos') === 'after') ? (text + ' ' + iconMarkup) : (iconMarkup + ' ' + text);
+      } else {
+        el.textContent = text;
       }
     });
 
@@ -2204,10 +2216,21 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#6b7480';
       ctx.stroke();
-      ctx.font = '14px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(item.type === 'door' ? '🚪' : '🪟', p.x, p.y);
+      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = '#ffffff';
+      if (item.type === 'door') {
+        ctx.strokeRect(p.x - 4, p.y - 7, 8, 14);
+        ctx.beginPath();
+        ctx.arc(p.x + 1.5, p.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+      } else {
+        ctx.strokeRect(p.x - 6.5, p.y - 6.5, 13, 13);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y - 6.5); ctx.lineTo(p.x, p.y + 6.5);
+        ctx.moveTo(p.x - 6.5, p.y); ctx.lineTo(p.x + 6.5, p.y);
+        ctx.stroke();
+      }
     });
   }
 
@@ -2423,7 +2446,7 @@
     var box = document.createElement('div');
     box.style.cssText = 'position:relative;overflow:hidden;background:#ffffff;border:1px solid #dfe2e6;border-radius:20px;padding:32px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 70px -25px rgba(90,98,116,0.35);';
 
-    var title = isAr ? '🎨 اشتري تصاميم' : '🎨 Buy Designs';
+    var title = isAr ? 'اشتري تصاميم' : 'Buy Designs';
     var sub = message || (isAr ? 'كل تصميم يخصم كريدت واحد من رصيدك' : 'Each design uses 1 credit from your balance');
     var closeLabel = isAr ? 'إغلاق' : 'Close';
 
@@ -2437,7 +2460,7 @@
     }).join('');
 
     box.innerHTML =
-      '<div style="font-size:42px;margin-bottom:16px;">✦</div>' +
+      '<div style="font-size:42px;margin-bottom:16px;">' + (window.icon ? window.icon('palette') : '') + '</div>' +
       '<div style="font-size:22px;font-weight:900;color:#3d434b;margin-bottom:8px;">' + title + '</div>' +
       '<div style="font-size:13px;color:#767d86;margin-bottom:20px;line-height:1.6;">' + sub + '</div>' +
       '<div id="creditsPkgList">' + packagesHtml + '</div>' +
@@ -2506,7 +2529,7 @@
     var genSub  = currentLang === 'ar' ? 'يستغرق 15-30 ثانية' : 'Takes 15-30 seconds';
     document.getElementById('resultImg').innerHTML =
       '<div class="result-placeholder" id="resultPlaceholder">' +
-        '<div class="rp-icon">🎨</div>' +
+        '<div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>' +
         '<p>' + genText + '</p>' +
         '<small>' + genSub + '</small>' +
       '</div>';
@@ -2738,7 +2761,7 @@
     function showGenerateError(message) {
       document.getElementById('loadingDots').classList.remove('show');
       document.getElementById('resultPlaceholder').style.display = 'block';
-      document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon">❌</div><p>' + message + '</p>';
+      document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><p>' + message + '</p>';
     }
 
     function callGenerate(imageUrl) {
@@ -2871,15 +2894,15 @@
             saveBtn.style.cssText = 'flex:1;background:var(--gold);color:var(--black);border:none;' +
               'padding:14px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;' +
               'font-family:Tajawal,sans-serif;transition:all 0.2s;';
-            var saveTxt = currentLang === 'ar' ? '⬇ حفظ الصورة' :
-              currentLang === 'de' ? '⬇ Bild speichern' :
-              currentLang === 'es' ? '⬇ Guardar imagen' :
-              currentLang === 'fr' ? '⬇ Sauvegarder' :
-              currentLang === 'it' ? '⬇ Salva immagine' :
-              currentLang === 'tr' ? '⬇ Resmi kaydet' :
-              currentLang === 'ru' ? '⬇ Sohranit' :
-              '⬇ Save Image';
-            saveBtn.textContent = saveTxt;
+            var saveTxt = currentLang === 'ar' ? 'حفظ الصورة' :
+              currentLang === 'de' ? 'Bild speichern' :
+              currentLang === 'es' ? 'Guardar imagen' :
+              currentLang === 'fr' ? 'Sauvegarder' :
+              currentLang === 'it' ? 'Salva immagine' :
+              currentLang === 'tr' ? 'Resmi kaydet' :
+              currentLang === 'ru' ? 'Sohranit' :
+              'Save Image';
+            saveBtn.innerHTML = (window.icon ? window.icon('download') : '') + ' ' + saveTxt;
             saveBtn.onclick = function() {
               var link = document.createElement('a');
               link.href = url; // the direct fal.ai image URL
@@ -2895,7 +2918,7 @@
             shareBtn.style.cssText = 'background:transparent;color:var(--gold);border:1.5px solid var(--gold);' +
               'padding:14px 18px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;' +
               'font-family:Tajawal,sans-serif;transition:all 0.2s;white-space:nowrap;';
-            shareBtn.textContent = '↗ ' + (currentLang === 'ar' ? 'مشاركة' : 'Share');
+            shareBtn.innerHTML = (window.icon ? window.icon('share') : '') + ' ' + (currentLang === 'ar' ? 'مشاركة' : 'Share');
             shareBtn.onclick = function() {
               if (navigator.share) {
                 navigator.share({ title: 'Lamsa Design', url: url })
@@ -2919,7 +2942,7 @@
               '<img src="' + lastBeforeImageDataUrl + '" style="width:100%;border-radius:10px;object-fit:cover;">';
 
             var afterDiv = document.createElement('div');
-            afterDiv.innerHTML = '<p style="color:var(--gold);font-size:12px;text-align:center;margin-bottom:6px;">After ✦</p>' +
+            afterDiv.innerHTML = '<p style="color:var(--gold);font-size:12px;text-align:center;margin-bottom:6px;">After</p>' +
               '<img src="' + images[0].url + '" style="width:100%;border-radius:10px;object-fit:cover;">';
 
             beforeAfterDiv.appendChild(beforeDiv);
@@ -2948,7 +2971,7 @@
           refreshCreditBalance(); // a credit was just spent — reflect the new balance
         } else {
           document.getElementById('resultPlaceholder').style.display = 'block';
-          document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon">❌</div><p>Error generating image. Please try again.</p>';
+          document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><p>Error generating image. Please try again.</p>';
         }
     } // close renderResult
 
@@ -2968,7 +2991,7 @@
         .catch(function(uploadErr) {
           document.getElementById('loadingDots').classList.remove('show');
           document.getElementById('resultPlaceholder').style.display = 'block';
-          document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon">❌</div><p>Image upload failed. Please try again.</p>';
+          document.getElementById('resultPlaceholder').innerHTML = '<div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><p>Image upload failed. Please try again.</p>';
           console.error('upload error:', uploadErr);
         });
       });
@@ -3027,7 +3050,7 @@
     if (!checkout) return;
 
     if (checkout === 'success') {
-      alert(currentLang === 'ar' ? '✦ تم الدفع بنجاح! رح يتحدّث رصيدك خلال ثوانٍ.' : '✦ Payment successful! Your balance will update in a few seconds.');
+      alert(currentLang === 'ar' ? 'تم الدفع بنجاح! رح يتحدّث رصيدك خلال ثوانٍ.' : 'Payment successful! Your balance will update in a few seconds.');
       // The Stripe webhook that actually grants the credits can land a beat
       // after this redirect happens, so poll the balance a few times rather
       // than trusting a single check right away.

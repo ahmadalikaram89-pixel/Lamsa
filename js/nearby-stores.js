@@ -62,7 +62,9 @@
       }
 
       var isAr = options.lang === 'ar';
-      var title = isAr ? '🛋️ تسوق قطع مشابهة' : '🛋️ Shop similar pieces';
+      var sofaIcon = window.icon ? window.icon('sofa') : '';
+      var pinIcon = window.icon ? window.icon('pin') : '';
+      var title = sofaIcon + ' ' + (isAr ? 'تسوق قطع مشابهة' : 'Shop similar pieces');
       var sub = isAr ? 'محلات أثاث في ' + (entry.nameAr || entry.name) : 'Furniture stores in ' + entry.name;
       var btnLabel = isAr ? 'عرض على الخريطة' : 'View on map';
 
@@ -70,7 +72,7 @@
         var url = mapsSearchUrl(storeName, entry.name);
         return '<div class="nearby-store-item">' +
           '<span class="nearby-store-name">' + storeName + '</span>' +
-          '<a class="nearby-store-btn" href="' + url + '" target="_blank" rel="noopener noreferrer">📍 ' + btnLabel + '</a>' +
+          '<a class="nearby-store-btn" href="' + url + '" target="_blank" rel="noopener noreferrer">' + pinIcon + ' ' + btnLabel + '</a>' +
           '</div>';
       }).join('');
 
