@@ -102,6 +102,10 @@
     width: 380px; height: 380px; pointer-events: none; opacity: 0.5;
   }
   .motif svg { width: 100%; height: 100%; }
+  .motif .motif-rings { transform-box: fill-box; transform-origin: center; animation: motif-spin 90s linear infinite; }
+  .motif .motif-diamond { transform-box: fill-box; transform-origin: center; animation: motif-spin-reverse 70s linear infinite; }
+  @keyframes motif-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes motif-spin-reverse { from { transform: rotate(45deg); } to { transform: rotate(-315deg); } }
 
   .brand {
     display: flex; align-items: center; gap: 12px;
@@ -576,11 +580,13 @@
   <div class="left-grid"></div>
   <div class="motif">
     <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="200" cy="200" r="180" stroke="#6b7480" stroke-width="0.6"/>
-      <circle cx="200" cy="200" r="140" stroke="#6b7480" stroke-width="0.6"/>
-      <circle cx="200" cy="200" r="100" stroke="#6b7480" stroke-width="1"/>
-      <rect x="120" y="120" width="160" height="160" stroke="#6b7480" stroke-width="0.8" transform="rotate(45 200 200)"/>
-      <path d="M200 60 L200 340 M60 200 L340 200" stroke="#6b7480" stroke-width="0.4"/>
+      <g class="motif-rings">
+        <circle cx="200" cy="200" r="180" stroke="#6b7480" stroke-width="0.6"/>
+        <circle cx="200" cy="200" r="140" stroke="#6b7480" stroke-width="0.6"/>
+        <circle cx="200" cy="200" r="100" stroke="#6b7480" stroke-width="1"/>
+        <path d="M200 60 L200 340 M60 200 L340 200" stroke="#6b7480" stroke-width="0.4"/>
+      </g>
+      <rect class="motif-diamond" x="120" y="120" width="160" height="160" stroke="#6b7480" stroke-width="0.8" transform="rotate(45 200 200)"/>
     </svg>
   </div>
 
