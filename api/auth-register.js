@@ -23,10 +23,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const user = await createUser({ username: username.trim(), email: normalizedEmail, password, country });
-    if (!user) {
+    const result = await createUser({ username: username.trim(), email: normalizedEmail, password, country });
+    if (result.error === 'email_taken') {
       return res.status(409).json({ error: 'An account with this email already exists' });
     }
+    if (result.error === 'username_taken') {
+      return res.status(409).json({ error: 'This username is already taken' });
+    }
+    const user = result.user;
 
     const token = await createSession(normalizedEmail);
     setSessionCookie(res, req, token);

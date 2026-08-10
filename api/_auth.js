@@ -11,6 +11,10 @@ function userKey(email) {
   return 'lamsa:user:' + email.trim().toLowerCase();
 }
 
+function usernameKey(username) {
+  return 'lamsa:username:' + username.trim().toLowerCase();
+}
+
 function sessionKey(token) {
   return 'lamsa:session:' + token;
 }
@@ -37,23 +41,41 @@ export function verifyPassword(password, salt, hash) {
   });
 }
 
-// Returns null if the email is already registered.
+// Returns { error: 'email_taken' | 'username_taken' } if either is already
+// registered, or { user } on success. Username uniqueness is
+// case-insensitive (usernameKey lowercases), matching how login resolves it.
 export async function createUser({ username, email, password, country }) {
   const key = userKey(email);
-  const existing = await redis.get(key);
-  if (existing) return null;
+  const existingEmail = await redis.get(key);
+  if (existingEmail) return { error: 'email_taken' };
+
+  const uKey = usernameKey(username);
+  const existingUsername = await redis.get(uKey);
+  if (existingUsername) return { error: 'username_taken' };
 
   const { salt, hash } = await hashPassword(password);
+  const normalizedEmail = email.trim().toLowerCase();
   const user = {
     username,
-    email: email.trim().toLowerCase(),
+    email: normalizedEmail,
     passwordSalt: salt,
     passwordHash: hash,
     country: country || null,
     createdAt: new Date().toISOString()
   };
   await redis.set(key, user);
-  return user;
+  await redis.set(uKey, normalizedEmail);
+  return { user };
+}
+
+// Login accepts either an email or a username. Resolves either to the email
+// that actually keys the user record — a plain string match on EMAIL_RE
+// decides which one was given, since usernames never contain '@'.
+export async function resolveLoginEmail(identifier) {
+  const trimmed = (identifier || '').trim();
+  if (!trimmed) return null;
+  if (EMAIL_RE.test(trimmed)) return trimmed.toLowerCase();
+  return redis.get(usernameKey(trimmed));
 }
 
 export async function getUser(email) {
