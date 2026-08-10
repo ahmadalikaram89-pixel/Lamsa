@@ -1429,6 +1429,19 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label data-en="Flooring Material" data-ar="نوع الأرضية">Flooring Material</label>
+          <div class="chips" id="floorChips">
+            <div class="chip" onclick="selectColor(this)" data-en="Wood/Parquet" data-ar="خشب/باركيه">Wood/Parquet</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Marble" data-ar="رخام">Marble</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Granite" data-ar="غرانيت">Granite</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Ceramic Tile" data-ar="سيراميك">Ceramic Tile</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Natural Stone" data-ar="حجر طبيعي">Natural Stone</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Polished Concrete" data-ar="خرسانة مصقولة">Polished Concrete</div>
+            <div class="chip" onclick="selectColor(this)" data-en="Carpet" data-ar="سجاد">Carpet</div>
+          </div>
+        </div>
+
         <div class="panel-nav">
           <button class="btn-prev" onclick="prev()" data-icon="arrowLeft" data-ar="السابق" data-en="Back">Back</button>
           <button class="btn-next" onclick="next()" data-icon="arrowRight" data-icon-pos="after" data-ar="التالي" data-en="Next">Next</button>
@@ -2622,8 +2635,11 @@
     });
     var selectedColors = [];
     document.querySelectorAll('#panel-4 .chip.selected').forEach(function(el) {
+      if (el.closest('#floorChips')) return; // flooring is a separate single-select, handled below
       selectedColors.push(el.getAttribute('data-en') || el.textContent.trim());
     });
+    var selectedFloorEl = document.querySelector('#floorChips .chip.selected');
+    var floorText = selectedFloorEl ? (selectedFloorEl.getAttribute('data-en') || selectedFloorEl.textContent.trim()) : '';
 
     // --- PANEL 5: Mood, Notes ---
     var moods = [];
@@ -2663,6 +2679,11 @@
       rugInstruction = 'RUG/CARPET: ABSOLUTELY NONE. Bare floor only. ';
     }
 
+    // Flooring instruction
+    var floorInstruction = floorText ? ('Flooring: ' + floorText + ' throughout the room. ') : '';
+
+    var surfacesInstruction = floorInstruction + rugInstruction;
+
     var fpInfo = typeof getFpDescription === 'function' ? getFpDescription() : '';
 
     // ═══════════════════════════════════════════════
@@ -2690,7 +2711,7 @@
       '\nApply this style to EVERY element: furniture silhouettes, materials, textures, decorative details, hardware finishes, and accessories.' +
 
       // ── SURFACES ──
-      (rugInstruction ? '\n\n=== SURFACES & FINISHES ===\n' + rugInstruction : '') +
+      (surfacesInstruction ? '\n\n=== SURFACES & FINISHES ===\n' + surfacesInstruction : '') +
 
       // ── FURNITURE ──
       '\n\n=== FURNITURE ===' +
