@@ -438,13 +438,14 @@
     border-bottom: 1px solid var(--border);
   }
 
-  /* HERO */
+  /* HERO — just the two CTA buttons now; the badge/title/subtitle/stats
+     moved down to sit right above the wizard (see #form-section), so this
+     no longer needs to fill the viewport. */
   .hero {
-    min-height: 100vh;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     text-align: center;
-    padding: 120px 24px 60px;
+    padding: 140px 24px 60px;
     position: relative;
     overflow: hidden;
   }
@@ -479,15 +480,15 @@
   @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-  .hero h1 {
+  .hero-title {
     font-size: clamp(36px, 8vw, 72px);
     font-weight: 900;
     line-height: 1.15;
     margin-bottom: 12px;
     animation: fadeUp 0.8s 0.1s ease both;
   }
-  .hero h1 .gold { color: var(--gold); }
-  .hero h1 .en {
+  .hero-title .gold { color: var(--gold); }
+  .hero-title .en {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     font-size: 0.6em;
@@ -1076,16 +1077,20 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="hero-badge" data-ar="مدعوم بالذكاء الاصطناعي · أول منصة تصميم داخلي بـ 8 لغات" data-en="Powered by AI · First Interior Design Platform in 8 Languages" data-de="KI-gestützt · Erste Innendesign-Plattform in 8 Sprachen" data-es="Impulsado por IA · Primera plataforma en 8 idiomas">Powered by AI · First Interior Design Platform in 8 Languages</div>
-  <h1>
-    <span data-ar="حوّل " data-en="Transform ">Transform </span><span class="gold" data-ar="غرفتك" data-en="Your Room">Your Room</span><span data-ar=" إلى تحفة" data-en=" Into Art"> Into Art</span>
-    <span class="en">DESIGN YOUR DREAM SPACE</span>
-  </h1>
-  <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="scrollToForm()" data-icon="palette" data-ar="صمّم غرفتك الآن" data-en="Design Your Room Now">Design Your Room Now</button>
     <button class="btn-secondary" onclick="openModal('how-it-works')" data-icon="arrowRight" data-icon-pos="after" data-ar="شاهد كيف يعمل" data-en="See How It Works">See How It Works</button>
   </div>
+</section>
+
+<!-- FORM SECTION -->
+<section class="section" id="form-section">
+  <div class="hero-badge" data-ar="مدعوم بالذكاء الاصطناعي · أول منصة تصميم داخلي بـ 8 لغات" data-en="Powered by AI · First Interior Design Platform in 8 Languages" data-de="KI-gestützt · Erste Innendesign-Plattform in 8 Sprachen" data-es="Impulsado por IA · Primera plataforma en 8 idiomas">Powered by AI · First Interior Design Platform in 8 Languages</div>
+  <h1 class="hero-title">
+    <span data-ar="حوّل " data-en="Transform ">Transform </span><span class="gold" data-ar="غرفتك" data-en="Your Room">Your Room</span><span data-ar=" إلى تحفة" data-en=" Into Art"> Into Art</span>
+    <span class="en">DESIGN YOUR DREAM SPACE</span>
+  </h1>
+  <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="stats">
     <div class="stat">
       <div class="stat-num">+5K</div>
@@ -1104,13 +1109,6 @@
       <div class="stat-label" data-ar="لغات عالمية" data-en="Languages">Languages</div>
     </div>
   </div>
-</section>
-
-<!-- FORM SECTION -->
-<section class="section" id="form-section">
-  <div class="section-tag reveal" data-ar="المنصة" data-en="PLATFORM">PLATFORM</div>
-  <h2 class="section-title reveal" data-ar="صمّم بنفسك" data-en="Design It Yourself">Design It Yourself</h2>
-  <p class="section-sub reveal" data-ar="خطوات بسيطة توصلك لتصميم احترافي يناسب ذوقك وميزانيتك" data-en="Simple steps to get a professional design that suits your taste and budget">Simple steps to get a professional design that suits your taste and budget</p>
 
   <div class="steps-wrap reveal">
     <!-- PROGRESS -->
