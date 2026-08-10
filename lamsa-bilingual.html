@@ -1546,8 +1546,9 @@
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section">
+<!-- FEATURES (hidden until a design is generated — see renderResult() — so the
+     pre-generation mobile scroll stays short instead of front-loading marketing copy) -->
+<section class="section" id="whyLamsaSection" style="display:none;">
   <div class="gold-line"></div>
   <br><br>
   <div class="section-tag reveal" data-ar="لماذا لمستي" data-en="WHY LAMSA">WHY LAMSA</div>
@@ -2923,6 +2924,18 @@
         var images = extractResultImages(data);
 
         if (images && images.length > 0) {
+          // "Why Lamsa" stays hidden pre-generation to keep the mobile scroll
+          // short; reveal it now that there's an actual result to back up
+          // the marketing copy (and for scroll-reveal cards, mark them
+          // visible directly — the IntersectionObserver already ran once at
+          // page load while this section was display:none, so it never
+          // observed them intersecting).
+          var whyLamsaSection = document.getElementById('whyLamsaSection');
+          if (whyLamsaSection) {
+            whyLamsaSection.style.display = '';
+            whyLamsaSection.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+          }
+
           var imgWrap = document.getElementById('resultImg');
           imgWrap.innerHTML = '';
 
