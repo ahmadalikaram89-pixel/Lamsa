@@ -673,7 +673,7 @@
   <div class="auth-box">
 
     <!-- TABS -->
-    <div class="auth-tabs">
+    <div class="auth-tabs" id="authTabs">
       <div class="auth-tab active" onclick="switchTab('login')" id="tab-login">تسجيل الدخول</div>
       <div class="auth-tab" onclick="switchTab('register')" id="tab-register">حساب جديد</div>
     </div>
@@ -1028,6 +1028,7 @@
     }
 
     document.getElementById('formContent').style.display = 'none';
+    document.getElementById('authTabs').style.display = 'none';
     document.getElementById('successBox').classList.add('show');
 
     // Update title with username
@@ -1044,6 +1045,7 @@
   function closeSuccess() {
     document.getElementById('successBox').classList.remove('show');
     document.getElementById('formContent').style.display = '';
+    document.getElementById('authTabs').style.display = '';
   }
 
   // LANG SYSTEM
