@@ -335,12 +335,12 @@
     pointer-events: none;
   }
   .input-wrap .form-input { padding-left: 42px; }
-  .input-wrap:has(.toggle-pass) .form-input { padding-inline-start: 40px; }
+  .input-wrap:has(.toggle-pass) .form-input { padding-left: 40px; padding-right: 40px; }
 
   .toggle-pass {
     position: absolute;
     top: 50%; transform: translateY(-50%);
-    inset-inline-start: 14px;
+    right: 14px;
     background: none; border: none;
     color: var(--gray); cursor: pointer;
     font-size: 14px; padding: 4px;
