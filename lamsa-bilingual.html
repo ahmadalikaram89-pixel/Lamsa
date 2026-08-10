@@ -2147,6 +2147,20 @@
   var resultAreaSnapshot = null; // pristine result-area markup (doGenerate replaces its contents with the generated image)
   var lastBeforeImageDataUrl = null; // "before" image shown in the before/after result view
 
+  // Belt-and-suspenders alongside the .panel/.panel.active CSS rule: forces
+  // every panel's display inline, so exactly one is ever visible even if
+  // something else (a stale cached stylesheet, a browser extension's
+  // injected CSS, whatever) manages to interfere with the class-based rule.
+  // A user reported briefly seeing two Next buttons at once that this
+  // could never be reproduced locally under — this makes the mechanism
+  // correct by construction instead of depending on cascade order.
+  function enforcePanelVisibility() {
+    document.querySelectorAll('.panel').forEach(function(p, i) {
+      p.style.display = (i + 1 === currentPanel) ? 'block' : 'none';
+    });
+  }
+  enforcePanelVisibility();
+
   function goTo(n) {
     document.getElementById('panel-' + currentPanel).classList.remove('active');
     document.querySelectorAll('.progress-step')[currentPanel - 1].classList.remove('active');
@@ -2155,6 +2169,7 @@
     document.getElementById('panel-' + currentPanel).classList.add('active');
     document.querySelectorAll('.progress-step')[currentPanel - 1].classList.add('active');
     document.querySelectorAll('.progress-step')[currentPanel - 1].classList.remove('done');
+    enforcePanelVisibility();
 
     // BUG 4 fix: panel navigation must never leave scrolling locked
     document.body.style.overflow = '';
