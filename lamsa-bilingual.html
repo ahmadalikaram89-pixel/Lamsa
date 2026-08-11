@@ -455,27 +455,80 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     text-align: center;
-    padding: 140px 24px 60px;
+    padding: 140px 24px 80px;
+    min-height: min(80vh, 640px);
     position: relative;
     overflow: hidden;
+    isolation: isolate;
+    background: var(--gold-deep);
   }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(107,116,128,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(107,116,128,0.04) 0%, transparent 60%);
+
+  /* Animated before/after background — cycles through real completed
+     redesigns instead of a static abstract pattern, so the hero itself
+     demonstrates the product rather than just describing it. */
+  .hero-bg-stack { position: absolute; inset: 0; z-index: 0; }
+  .hero-pair { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+  .hero-pair.active { opacity: 1; }
+  .hero-pair-zoom { position: absolute; inset: -3%; }
+  .hero-pair.active .hero-pair-zoom { animation: heroKenburns 9s ease-in-out forwards; }
+  @keyframes heroKenburns { 0% { transform: scale(1.02); } 100% { transform: scale(1.08); } }
+
+  .hero-layer { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .hero-layer-after { clip-path: inset(0 100% 0 0); }
+  .hero-pair.active .hero-layer-after { animation: heroWipeReveal 9s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes heroWipeReveal {
+    0%   { clip-path: inset(0 100% 0 0); }
+    38%  { clip-path: inset(0 100% 0 0); }
+    66%  { clip-path: inset(0 0% 0 0); }
+    100% { clip-path: inset(0 0% 0 0); }
   }
-  .hero-grid {
-    position: absolute; inset: 0; opacity: 0.03;
-    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
-    background-size: 60px 60px;
+  .hero-edge {
+    position: absolute; top: 0; bottom: 0; width: 3px;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 0 18px 2px rgba(255,255,255,0.55);
+    opacity: 0;
   }
+  .hero-pair.active .hero-edge { animation: heroEdgeSweep 9s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes heroEdgeSweep {
+    0%   { left: 0%; opacity: 0; }
+    36%  { left: 0%; opacity: 0; }
+    38%  { opacity: 1; }
+    66%  { left: 100%; opacity: 1; }
+    68%  { opacity: 0; }
+    100% { left: 100%; opacity: 0; }
+  }
+  .hero-tag {
+    position: absolute; top: 20px; z-index: 1;
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px;
+    background: rgba(0,0,0,0.35); backdrop-filter: blur(6px);
+    color: rgba(255,255,255,0.92);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .hero-tag-before { inset-inline-start: 20px; }
+  .hero-tag-after { inset-inline-end: 20px; }
+  .hero-pair.active .hero-tag-before { animation: heroTagBefore 9s linear forwards; }
+  .hero-pair.active .hero-tag-after { animation: heroTagAfter 9s linear forwards; }
+  @keyframes heroTagBefore { 0%{opacity:1} 34%{opacity:1} 40%{opacity:0} 100%{opacity:0} }
+  @keyframes heroTagAfter { 0%{opacity:0} 64%{opacity:0} 70%{opacity:1} 100%{opacity:1} }
+
+  .hero-scrim {
+    position: absolute; inset: 0; z-index: 0;
+    background: linear-gradient(180deg, rgba(10,11,13,0.62) 0%, rgba(10,11,13,0.30) 40%, rgba(10,11,13,0.38) 68%, rgba(10,11,13,0.66) 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-pair.active .hero-pair-zoom, .hero-pair.active .hero-layer-after, .hero-pair.active .hero-edge,
+    .hero-pair.active .hero-tag-before, .hero-pair.active .hero-tag-after { animation: none; }
+    .hero-pair.active .hero-layer-after { clip-path: inset(0 0% 0 0); }
+  }
+
   .hero-badge {
+    position: relative; z-index: 1;
     display: inline-flex; align-items: center; gap: 8px;
-    background: var(--gold-dim);
-    border: 1px solid rgba(107,116,128,0.3);
-    color: var(--gold-deep);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
     padding: 8px 18px;
     border-radius: 30px;
     font-size: 12px;
@@ -484,38 +537,44 @@
     margin-bottom: 32px;
     animation: fadeDown 0.8s ease both;
   }
-  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold-light); flex-shrink: 0; }
 
   @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
   .hero-title {
+    position: relative; z-index: 1;
     font-size: clamp(36px, 8vw, 72px);
     font-weight: 900;
     line-height: 1.15;
     margin-bottom: 12px;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.35);
     animation: fadeUp 0.8s 0.1s ease both;
   }
-  .hero-title .gold { color: var(--gold); }
+  .hero-title .gold { color: var(--gold-light); }
   .hero-title .en {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     font-size: 0.6em;
-    color: var(--gray);
+    color: rgba(255,255,255,0.75);
     display: block;
     letter-spacing: 6px;
     margin-top: 4px;
   }
   .hero-sub {
+    position: relative; z-index: 1;
     font-size: clamp(14px, 3vw, 18px);
-    color: var(--gray);
+    color: rgba(255,255,255,0.86);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.3);
     max-width: 500px;
     line-height: 1.7;
     margin-bottom: 48px;
     animation: fadeUp 0.8s 0.2s ease both;
   }
   .hero-cta {
+    position: relative; z-index: 1;
     display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
     animation: fadeUp 0.8s 0.3s ease both;
   }
@@ -546,9 +605,9 @@
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 38px -6px rgba(107,116,128,0.5); }
 
   .btn-secondary {
-    background: transparent;
-    color: var(--light);
-    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.45);
     padding: 16px 36px;
     border-radius: 8px;
     font-family: 'Tajawal', sans-serif;
@@ -556,7 +615,7 @@
     cursor: pointer;
     transition: all 0.25s;
   }
-  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-secondary:hover { border-color: var(--gold-light); color: var(--gold-light); background: rgba(255,255,255,0.14); }
 
   /* STATS */
   .stats {
@@ -1059,9 +1118,6 @@
        entirely — the wizard's Photo step is the first thing under the
        nav, no tap or scroll needed to reach it. */
     .hero,
-    #form-section > .hero-badge,
-    #form-section > .hero-title,
-    #form-section > .hero-sub,
     #form-section > .stats,
     footer { display: none; }
     #form-section { padding-top: 168px; }
@@ -1105,8 +1161,15 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
+  <div class="hero-bg-stack" id="heroBgStack"></div>
+  <div class="hero-scrim"></div>
+
+  <div class="hero-badge" data-ar="مدعوم بالذكاء الاصطناعي · أول منصة تصميم داخلي بـ 8 لغات" data-en="Powered by AI · First Interior Design Platform in 8 Languages" data-de="KI-gestützt · Erste Innendesign-Plattform in 8 Sprachen" data-es="Impulsado por IA · Primera plataforma en 8 idiomas">Powered by AI · First Interior Design Platform in 8 Languages</div>
+  <h1 class="hero-title">
+    <span data-ar="حوّل " data-en="Transform ">Transform </span><span class="gold" data-ar="غرفتك" data-en="Your Room">Your Room</span><span data-ar=" إلى تحفة" data-en=" Into Art"> Into Art</span>
+    <span class="en">DESIGN YOUR DREAM SPACE</span>
+  </h1>
+  <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="hero-cta">
     <button class="btn-primary" onclick="scrollToForm()" data-icon="palette" data-ar="صمّم غرفتك الآن" data-en="Design Your Room Now">Design Your Room Now</button>
     <button class="btn-secondary" onclick="openModal('how-it-works')" data-icon="arrowRight" data-icon-pos="after" data-ar="شاهد كيف يعمل" data-en="See How It Works">See How It Works</button>
@@ -1115,12 +1178,6 @@
 
 <!-- FORM SECTION -->
 <section class="section" id="form-section">
-  <div class="hero-badge" data-ar="مدعوم بالذكاء الاصطناعي · أول منصة تصميم داخلي بـ 8 لغات" data-en="Powered by AI · First Interior Design Platform in 8 Languages" data-de="KI-gestützt · Erste Innendesign-Plattform in 8 Sprachen" data-es="Impulsado por IA · Primera plataforma en 8 idiomas">Powered by AI · First Interior Design Platform in 8 Languages</div>
-  <h1 class="hero-title">
-    <span data-ar="حوّل " data-en="Transform ">Transform </span><span class="gold" data-ar="غرفتك" data-en="Your Room">Your Room</span><span data-ar=" إلى تحفة" data-en=" Into Art"> Into Art</span>
-    <span class="en">DESIGN YOUR DREAM SPACE</span>
-  </h1>
-  <p class="hero-sub" data-ar="ارفع صورة غرفتك، أدخل تفاصيلك، واحصل على تصميم واقعي احترافي في ثوانٍ" data-en="Upload your room photo, enter your details, and get a realistic professional design in seconds">Upload your room photo, enter your details, and get a realistic professional design in seconds</p>
   <div class="stats">
     <div class="stat">
       <div class="stat-num">+5K</div>
@@ -3311,6 +3368,7 @@
   window.addEventListener('DOMContentLoaded', function() {
     setLang('en');
     initFloorPlan();
+    initHeroBackground();
     formPanelsSnapshot = document.querySelector('.form-panels').innerHTML;
     resultAreaSnapshot = document.getElementById('resultArea').innerHTML;
     checkAuth().then(function(user) {
@@ -3319,6 +3377,85 @@
       handleCheckoutRedirect();
     });
   });
+
+  // Cycles the hero's before/after background through a handful of real
+  // completed redesigns. Desktop-only for now — the hero section itself is
+  // hidden on mobile (see the max-width:600px block above) to keep the
+  // wizard the first thing under the nav.
+  function initHeroBackground() {
+    var HERO_PAIRS = [
+      { before: 'assets/hero-bg/pair1-before.jpg', after: 'assets/hero-bg/pair1-after.jpg' },
+      { before: 'assets/hero-bg/pair2-before.jpg', after: 'assets/hero-bg/pair2-after.jpg' },
+      { before: 'assets/hero-bg/pair3-before.jpg', after: 'assets/hero-bg/pair3-after.jpg' }
+    ];
+    var stackEl = document.getElementById('heroBgStack');
+    if (!stackEl) return;
+
+    var pairs = [];
+    HERO_PAIRS.forEach(function (p) {
+      var pair = document.createElement('div');
+      pair.className = 'hero-pair';
+
+      var zoom = document.createElement('div');
+      zoom.className = 'hero-pair-zoom';
+
+      var before = document.createElement('div');
+      before.className = 'hero-layer hero-layer-before';
+      before.style.backgroundImage = 'url(' + p.before + ')';
+
+      var after = document.createElement('div');
+      after.className = 'hero-layer hero-layer-after';
+      after.style.backgroundImage = 'url(' + p.after + ')';
+
+      var edge = document.createElement('div');
+      edge.className = 'hero-edge';
+
+      zoom.appendChild(before);
+      zoom.appendChild(after);
+      zoom.appendChild(edge);
+      pair.appendChild(zoom);
+
+      var tagB = document.createElement('div');
+      tagB.className = 'hero-tag hero-tag-before';
+      tagB.setAttribute('data-en', 'Before');
+      tagB.setAttribute('data-ar', 'قبل');
+      tagB.textContent = currentLang === 'ar' ? 'قبل' : 'Before';
+      var tagA = document.createElement('div');
+      tagA.className = 'hero-tag hero-tag-after';
+      tagA.setAttribute('data-en', 'After');
+      tagA.setAttribute('data-ar', 'بعد');
+      tagA.textContent = currentLang === 'ar' ? 'بعد' : 'After';
+      pair.appendChild(tagB);
+      pair.appendChild(tagA);
+
+      stackEl.appendChild(pair);
+      pairs.push(pair);
+    });
+
+    var current = -1;
+    var HOLD_MS = 9000;
+
+    function restartAnim(el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+
+    function show(i) {
+      pairs.forEach(function (p, idx) {
+        p.classList.toggle('active', idx === i);
+        if (idx === i) {
+          restartAnim(p.querySelector('.hero-pair-zoom'));
+          restartAnim(p.querySelector('.hero-layer-after'));
+          restartAnim(p.querySelector('.hero-edge'));
+          restartAnim(p.querySelector('.hero-tag-before'));
+          restartAnim(p.querySelector('.hero-tag-after'));
+        }
+      });
+      current = i;
+    }
+
+    function next() { show((current + 1) % pairs.length); }
+
+    show(0);
+    setInterval(next, HOLD_MS);
+  }
 
   // After a Stripe Checkout redirect back to this page, show a short status
   // message and strip the query param so a refresh doesn't repeat it.
