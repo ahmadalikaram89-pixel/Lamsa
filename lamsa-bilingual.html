@@ -1493,6 +1493,38 @@
           </div>
         </div>
 
+        <!-- ADD FURNITURE -->
+        <div class="form-group" style="margin-bottom:16px;">
+          <label data-en="Add Furniture (optional)" data-ar="إضافة أثاث (اختياري)">Add Furniture (optional)</label>
+          <div class="chips" id="extraFurnitureChips">
+            <div class="chip" onclick="toggleChip(this)" data-en="Bookshelf" data-ar="مكتبة كتب">Bookshelf</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Accent Chair" data-ar="كرسي إضافي">Accent Chair</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="TV Console" data-ar="وحدة تلفزيون">TV Console</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Console Table" data-ar="طاولة كونسول">Console Table</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Ottoman" data-ar="أوتومان">Ottoman</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Bench" data-ar="مقعد طويل">Bench</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Floor Lamp" data-ar="لمبة أرضية">Floor Lamp</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Wall Mirror" data-ar="مرآة حائط">Wall Mirror</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Indoor Plants" data-ar="نباتات داخلية">Indoor Plants</div>
+            <div class="chip" onclick="toggleChip(this)" data-en="Bar Cart" data-ar="عربة بار">Bar Cart</div>
+          </div>
+        </div>
+
+        <!-- FURNITURE COLOR -->
+        <div class="form-group" style="margin-bottom:16px;">
+          <label data-en="Furniture Color" data-ar="لون الأثاث">Furniture Color</label>
+          <div class="chips" id="furnitureColorChips">
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchNeutral" data-en="Neutral/Gray" data-ar="محايد/رمادي">Neutral/Gray</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchWarm" data-en="Warm/Wood" data-ar="دافئ/خشبي">Warm/Wood</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchCool" data-en="Cool/Blue" data-ar="بارد/أزرق">Cool/Blue</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchPink" data-en="Pink/Soft" data-ar="وردي/ناعم">Pink/Soft</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchGreen" data-en="Green/Natural" data-ar="أخضر/طبيعي">Green/Natural</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchBlackGold" data-en="Black/Gold" data-ar="أسود/ذهبي">Black/Gold</div>
+            <div class="chip" onclick="selectColor(this)" data-icon="swatchWhite" data-en="Pure White" data-ar="أبيض نقي">Pure White</div>
+          </div>
+          <p style="font-size:11px;color:var(--gray);margin-top:6px;" data-en="Leave unselected to match the overall color scheme" data-ar="اتركه بدون اختيار ليتناسق مع لوحة الألوان العامة">Leave unselected to match the overall color scheme</p>
+        </div>
+
         <!-- FREE DESCRIPTION -->
         <div class="form-group" style="margin-bottom:16px;">
           <label data-en="Describe Your Vision (optional)" data-ar="صف تصورك بحرية (اختياري)">Describe Your Vision (optional)</label>
@@ -2662,6 +2694,13 @@
       if (moodOptions.includes(txt)) moods.push(txt);
     });
 
+    var extraFurniture = [];
+    document.querySelectorAll('#extraFurnitureChips .chip.selected').forEach(function(el) {
+      extraFurniture.push(el.getAttribute('data-en') || el.textContent.trim());
+    });
+    var selectedFurnitureColorEl = document.querySelector('#furnitureColorChips .chip.selected');
+    var furnitureColorText = selectedFurnitureColorEl ? (selectedFurnitureColorEl.getAttribute('data-en') || selectedFurnitureColorEl.textContent.trim()) : '';
+
     var notes = document.querySelector('#panel-5 textarea') ? document.querySelector('#panel-5 textarea').value.trim() : '';
 
     // ─── Derived values ───
@@ -2681,6 +2720,13 @@
       bathroom: 'walk-in shower with glass partition, freestanding bathtub, double vanity with undermount sinks, large wall mirror, floating storage cabinet, towel rack, toilet'
     };
     var furnitureText = fallbackFurniture[roomType] || fallbackFurniture.bedroom;
+    // User-picked extras (bookshelf, accent chair, etc.) join the room
+    // type's default list — the prompt below treats this combined list as
+    // the ONLY furniture allowed, so anything the user wants has to be
+    // folded in here rather than appended separately.
+    if (extraFurniture.length > 0) {
+      furnitureText += ', ' + extraFurniture.join(', ');
+    }
 
     // Count beds from notes
     var bedCount = 1;
@@ -2746,6 +2792,7 @@
       // ── COLOR & ATMOSPHERE ──
       '\n\n=== COLOR PALETTE & ATMOSPHERE ===' +
       '\nColor scheme: ' + colorText + ' tones throughout — walls, textiles, furniture, and accessories.' +
+      (furnitureColorText ? '\nFurniture color: ' + furnitureColorText + ' — apply specifically to furniture pieces (sofas, chairs, tables, cabinets), independent of the wall/overall color scheme above.' : '') +
       (moods.length > 0 ? '\nRoom mood/atmosphere: ' + moods.join(', ') + '. Every design decision should reinforce this mood.' : '') +
 
       // ── BUDGET ──
