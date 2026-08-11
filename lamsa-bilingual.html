@@ -2842,6 +2842,18 @@
 
     var prompt = (designMode === 'rearrange') ? rearrangePrompt : redesignPrompt;
 
+    // The refine (Nano) stage polishes Flux's own output image, not the
+    // original photo — reusing `prompt` here would resend "strip the room
+    // bare and rebuild every furniture piece from scratch," which tells
+    // Nano to tear down and reimagine Flux's already-finished room instead
+    // of just refining it, compounding drift away from the source photo's
+    // actual structure. This is a narrow, structure-preserving pass only.
+    var refinementPrompt =
+      'This photo already shows a fully redesigned ' + roomTypeLabel + (styleText ? ' in ' + styleText + ' style' : '') + '.' +
+      ' Your ONLY task is to refine its visual quality: improve photorealism, lighting accuracy, material and texture rendering, and how objects relate to light and each other.' +
+      ' Do NOT change anything about the room itself — keep the exact same camera angle and perspective, the exact same room shape, wall count, window count, door count, and proportions, and the exact same furniture pieces already shown in this image, in their exact same positions.' +
+      ' Do not add, remove, move, or restyle any object. This is a quality-enhancement pass only, not a redesign.';
+
     // Compress image before upload (max 1280px, JPEG) — much faster upload & generation
     function compressImage(file, maxSize, quality, callback) {
       var img = new Image();
@@ -3027,7 +3039,7 @@
       return fetchJson('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt, image_url: fluxImageUrl, refine_token: refineToken })
+        body: JSON.stringify({ prompt: refinementPrompt, image_url: fluxImageUrl, refine_token: refineToken })
       })
       .then(function(result) {
         if (!result.ok || !result.data || !Array.isArray(result.data.requests) || !result.data.requests.length) {
