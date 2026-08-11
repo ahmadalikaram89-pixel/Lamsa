@@ -658,12 +658,22 @@
 
   /* STEPS — MAIN FORM AREA */
   .steps-wrap {
+    position: relative; z-index: 1;
     background: var(--dark);
     border: 1px solid var(--border);
     border-radius: 20px;
     overflow: hidden;
     margin-top: 48px;
   }
+
+  /* Mobile-only ambient background behind the wizard — desktop already has
+     its own dedicated hero background and doesn't need this. Hidden by
+     default; the mobile media query below turns it on. Reuses the same
+     .hero-pair/.hero-layer/.hero-edge/.hero-tag mechanic, just mounted in a
+     different container and tuned much quieter (heavier blur, darker tint)
+     since this is meant to read as ambient texture around the wizard card,
+     not a focal showcase moment like the hero. */
+  .form-bg-stack, .form-bg-scrim { display: none; }
 
   /* PROGRESS BAR */
   .progress-bar {
@@ -1120,10 +1130,17 @@
     .hero,
     #form-section > .stats,
     footer { display: none; }
-    #form-section { padding-top: 168px; }
+    #form-section { padding-top: 168px; position: relative; overflow: hidden; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
+
+    /* Ambient before/after background behind the wizard, visible in the
+       padding above the card and the margins around it — the card itself
+       stays fully opaque so form fields are never affected. */
+    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; inset: 0; z-index: 0; }
+    .form-bg-stack .hero-layer { filter: blur(3px) brightness(0.75) saturate(0.9); }
+    .form-bg-scrim { background: linear-gradient(180deg, rgba(20,22,26,0.55) 0%, rgba(20,22,26,0.30) 45%, rgba(20,22,26,0.55) 100%); }
   }
 </style>
 </head>
@@ -1178,6 +1195,9 @@
 
 <!-- FORM SECTION -->
 <section class="section" id="form-section">
+  <div class="form-bg-stack" id="formBgStack"></div>
+  <div class="form-bg-scrim"></div>
+
   <div class="stats">
     <div class="stat">
       <div class="stat-num">+5K</div>
@@ -3378,21 +3398,23 @@
     });
   });
 
-  // Cycles the hero's before/after background through a handful of real
-  // completed redesigns. Desktop-only for now — the hero section itself is
-  // hidden on mobile (see the max-width:600px block above) to keep the
-  // wizard the first thing under the nav.
-  function initHeroBackground() {
-    var HERO_PAIRS = [
-      { before: 'assets/hero-bg/pair1-before.jpg', after: 'assets/hero-bg/pair1-after.jpg' },
-      { before: 'assets/hero-bg/pair2-before.jpg', after: 'assets/hero-bg/pair2-after.jpg' },
-      { before: 'assets/hero-bg/pair3-before.jpg', after: 'assets/hero-bg/pair3-after.jpg' }
-    ];
-    var stackEl = document.getElementById('heroBgStack');
+  var BG_CYCLE_PAIRS = [
+    { before: 'assets/hero-bg/pair1-before.jpg', after: 'assets/hero-bg/pair1-after.jpg' },
+    { before: 'assets/hero-bg/pair2-before.jpg', after: 'assets/hero-bg/pair2-after.jpg' },
+    { before: 'assets/hero-bg/pair3-before.jpg', after: 'assets/hero-bg/pair3-after.jpg' }
+  ];
+
+  // Builds a cycling before/after background (Ken Burns zoom + wipe reveal)
+  // inside the given container, reusing the .hero-pair/.hero-layer/
+  // .hero-edge/.hero-tag mechanic. Used for both the desktop hero (its own
+  // showcase moment) and the mobile ambient background behind the wizard
+  // (ambient texture only, so its tags are skipped).
+  function buildBgCycle(containerId, showTags) {
+    var stackEl = document.getElementById(containerId);
     if (!stackEl) return;
 
     var pairs = [];
-    HERO_PAIRS.forEach(function (p) {
+    BG_CYCLE_PAIRS.forEach(function (p) {
       var pair = document.createElement('div');
       pair.className = 'hero-pair';
 
@@ -3415,18 +3437,20 @@
       zoom.appendChild(edge);
       pair.appendChild(zoom);
 
-      var tagB = document.createElement('div');
-      tagB.className = 'hero-tag hero-tag-before';
-      tagB.setAttribute('data-en', 'Before');
-      tagB.setAttribute('data-ar', 'قبل');
-      tagB.textContent = currentLang === 'ar' ? 'قبل' : 'Before';
-      var tagA = document.createElement('div');
-      tagA.className = 'hero-tag hero-tag-after';
-      tagA.setAttribute('data-en', 'After');
-      tagA.setAttribute('data-ar', 'بعد');
-      tagA.textContent = currentLang === 'ar' ? 'بعد' : 'After';
-      pair.appendChild(tagB);
-      pair.appendChild(tagA);
+      if (showTags) {
+        var tagB = document.createElement('div');
+        tagB.className = 'hero-tag hero-tag-before';
+        tagB.setAttribute('data-en', 'Before');
+        tagB.setAttribute('data-ar', 'قبل');
+        tagB.textContent = currentLang === 'ar' ? 'قبل' : 'Before';
+        var tagA = document.createElement('div');
+        tagA.className = 'hero-tag hero-tag-after';
+        tagA.setAttribute('data-en', 'After');
+        tagA.setAttribute('data-ar', 'بعد');
+        tagA.textContent = currentLang === 'ar' ? 'بعد' : 'After';
+        pair.appendChild(tagB);
+        pair.appendChild(tagA);
+      }
 
       stackEl.appendChild(pair);
       pairs.push(pair);
@@ -3435,7 +3459,7 @@
     var current = -1;
     var HOLD_MS = 9000;
 
-    function restartAnim(el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+    function restartAnim(el) { if (el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; } }
 
     function show(i) {
       pairs.forEach(function (p, idx) {
@@ -3455,6 +3479,18 @@
 
     show(0);
     setInterval(next, HOLD_MS);
+  }
+
+  // Desktop hero (its own showcase moment, with Before/After tags) and the
+  // mobile ambient background behind the wizard (no tags — the wizard card
+  // itself stays fully opaque, so this only ever shows in the surrounding
+  // padding/margins). Both run unconditionally; the inactive one is simply
+  // display:none via CSS for the current viewport, which costs a bit of
+  // upfront image loading but keeps this logic simple and avoids having to
+  // rebuild the cycle on resize/orientation change.
+  function initHeroBackground() {
+    buildBgCycle('heroBgStack', true);
+    buildBgCycle('formBgStack', false);
   }
 
   // After a Stripe Checkout redirect back to this page, show a short status
