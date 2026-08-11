@@ -550,61 +550,107 @@
     });
   }
 
-  function pollForResult(requestId, startTime) {
-    var elapsed = Date.now() - startTime;
-    if (elapsed >= POLL_TIMEOUT_MS) {
-      console.error('[generate] polling timed out after ' + Math.round(elapsed / 1000) + 's for request_id:', requestId);
-      showError('Generation took too long. Please try again.');
-      return;
-    }
-
-    console.log('[generate] polling status for request_id:', requestId, '(elapsed ' + Math.round(elapsed / 1000) + 's)');
-
-    fetchJson('/api/status?request_id=' + encodeURIComponent(requestId))
-      .then(function(result) {
-        console.log('[generate] status response (http ' + result.status + '):', result.data);
-
-        if (!result.ok) {
-          console.error('[generate] status check returned an error:', result.data);
-          showError('Error generating image. Please try again.');
+  // Resolves to { url } of the completed generation, or null if polling
+  // failed/timed out (an error has already been shown to the user in that
+  // case, so callers just need to bail out).
+  function pollForResult(requestId, model, startTime) {
+    return new Promise(function(resolve) {
+      function tick() {
+        var elapsed = Date.now() - startTime;
+        if (elapsed >= POLL_TIMEOUT_MS) {
+          console.error('[generate] polling timed out after ' + Math.round(elapsed / 1000) + 's for request_id:', requestId);
+          showError('Generation took too long. Please try again.');
+          resolve(null);
           return;
         }
 
-        // fal.ai returns status in varying casing depending on the endpoint version,
-        // so normalize before comparing.
-        var status = (result.data.status || '').toString().toUpperCase();
+        console.log('[generate] polling status for', model, requestId, '(elapsed ' + Math.round(elapsed / 1000) + 's)');
 
-        if (status === 'COMPLETED') {
-          console.log('[generate] status COMPLETED — fetching final result for request_id:', requestId);
-          fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&mode=result')
-            .then(function(resultResp) {
-              console.log('[generate] result response (http ' + resultResp.status + '):', resultResp.data);
-              if (!resultResp.ok) {
-                console.error('[generate] result fetch returned an error:', resultResp.data);
-                showError('Error generating image. Please try again.');
-                return;
-              }
-              renderGenerateResult(resultResp.data);
-            })
-            .catch(function(err) {
-              console.error('[generate] result fetch threw:', err);
-              showError('Connection error. Please try again.');
-            });
-        } else if (status === 'FAILED' || status === 'ERROR') {
-          console.error('[generate] generation failed:', result.data);
-          showError('Error generating image. Please try again.');
-        } else {
-          console.log('[generate] status = ' + status + ' — polling again in ' + (POLL_INTERVAL_MS / 1000) + 's');
-          setTimeout(function() { pollForResult(requestId, startTime); }, POLL_INTERVAL_MS);
-        }
-      })
-      .catch(function(err) {
-        console.error('[generate] status check threw:', err);
-        showError('Connection error. Please try again.');
-      });
+        fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&model=' + encodeURIComponent(model))
+          .then(function(result) {
+            console.log('[generate] status response (http ' + result.status + '):', result.data);
+
+            if (!result.ok) {
+              console.error('[generate] status check returned an error:', result.data);
+              showError('Error generating image. Please try again.');
+              resolve(null);
+              return;
+            }
+
+            // fal.ai returns status in varying casing depending on the endpoint version,
+            // so normalize before comparing.
+            var status = (result.data.status || '').toString().toUpperCase();
+
+            if (status === 'COMPLETED') {
+              console.log('[generate] status COMPLETED — fetching final result for', model, requestId);
+              fetchJson('/api/status?request_id=' + encodeURIComponent(requestId) + '&model=' + encodeURIComponent(model) + '&mode=result')
+                .then(function(resultResp) {
+                  console.log('[generate] result response (http ' + resultResp.status + '):', resultResp.data);
+                  if (!resultResp.ok) {
+                    console.error('[generate] result fetch returned an error:', resultResp.data);
+                    showError('Error generating image. Please try again.');
+                    resolve(null);
+                    return;
+                  }
+                  var images = extractResultImages(resultResp.data);
+                  resolve(images && images.length ? images[0] : null);
+                })
+                .catch(function(err) {
+                  console.error('[generate] result fetch threw:', err);
+                  showError('Connection error. Please try again.');
+                  resolve(null);
+                });
+            } else if (status === 'FAILED' || status === 'ERROR') {
+              console.error('[generate] generation failed:', result.data);
+              showError('Error generating image. Please try again.');
+              resolve(null);
+            } else {
+              console.log('[generate] status = ' + status + ' — polling again in ' + (POLL_INTERVAL_MS / 1000) + 's');
+              setTimeout(tick, POLL_INTERVAL_MS);
+            }
+          })
+          .catch(function(err) {
+            console.error('[generate] status check threw:', err);
+            showError('Connection error. Please try again.');
+            resolve(null);
+          });
+      }
+      tick();
+    });
   }
 
-  function callGenerate(imageUrl, prompt, guidanceScale, strength) {
+  // Stage 2: asks Nano Banana Pro to polish Flux's own output image (rather
+  // than starting over from the original photo) — mirrors the same
+  // refine_token flow used on the main designer page. Falls back to Flux's
+  // own (unpolished) result if the refine call or its polling fails,
+  // instead of failing the whole generation.
+  function refineWithNano(fluxImage, refineToken, refinementPrompt) {
+    if (!refineToken) return Promise.resolve(fluxImage);
+
+    return fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ prompt: refinementPrompt, image_url: fluxImage.url, refine_token: refineToken })
+    })
+    .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+    .then(function(result) {
+      if (!result.ok || !result.data || !Array.isArray(result.data.requests) || !result.data.requests.length) {
+        console.error('[generate] refine submit failed, falling back to Flux result:', result.data);
+        return fluxImage;
+      }
+      var req = result.data.requests[0];
+      return pollForResult(req.request_id, req.model, Date.now()).then(function(image) {
+        return image || fluxImage;
+      });
+    })
+    .catch(function(err) {
+      console.error('[generate] refine request error, falling back to Flux result:', err);
+      return fluxImage;
+    });
+  }
+
+  function callGenerate(imageUrl, prompt, guidanceScale, strength, refinementPrompt) {
     var requestBody = {
       prompt: prompt,
       image_url: imageUrl,
@@ -645,14 +691,21 @@
         return;
       }
 
-      if (!result.ok || !result.data || !result.data.request_id) {
-        console.error('[generate] no request_id in response:', result.data);
+      if (!result.ok || !result.data || !Array.isArray(result.data.requests) || !result.data.requests.length) {
+        console.error('[generate] no requests[] in response:', result.data);
         showError('Error generating image. Please try again.');
         return;
       }
 
-      console.log('[generate] request_id received:', result.data.request_id, '— starting poll loop');
-      pollForResult(result.data.request_id, Date.now());
+      var fluxReq = result.data.requests[0];
+      var refineToken = result.data.refineToken;
+      console.log('[generate] flux request_id received:', fluxReq.request_id, '— starting poll loop');
+      pollForResult(fluxReq.request_id, fluxReq.model, Date.now()).then(function(fluxImage) {
+        if (!fluxImage) return; // pollForResult already showed an error
+        refineWithNano(fluxImage, refineToken, refinementPrompt).then(function(finalImage) {
+          renderGenerateResult({ images: [finalImage] });
+        });
+      });
     })
     .catch(function(err) {
       console.error('[generate] /api/generate call threw:', err);
@@ -884,12 +937,22 @@
     // than a plain rearrange, so give the prompt more weight (guidance_scale)
     // and allow it to actually move further from the source pixels
     // (strength) — fal.ai defaults strength to 0.1 when omitted, which is
-    // far too conservative for a full redesign.
+    // far too conservative for a full redesign. 1 (max) let the model
+    // regenerate the room's actual structure instead of just its contents,
+    // so it's capped at 0.85 — same fix as the main designer page.
     var guidanceScale = isRedesign ? 7.5 : 3.5;
-    var strength = isRedesign ? 1 : 0.6;
+    var strength = isRedesign ? 0.85 : 0.6;
+
+    // Stage 2 (Nano refine) polishes Flux's own output image, not the
+    // original photo — reusing promptToUse here would resend redesign/
+    // rearrange instructions against an already-finished image, causing
+    // Nano to redo the transformation instead of just refining it.
+    var refinementPrompt = isRedesign
+      ? 'This photo already shows a fully redesigned room. Your ONLY task is to refine its visual quality: improve photorealism, lighting accuracy, and material/texture rendering. The walls, windows, and doors shown in this image are FIXED and must remain 100% identical in your output. Do NOT change the room shape, camera angle, or any furniture piece or position already shown in this image. This is a quality-enhancement pass only, not a redesign.'
+      : 'This photo already shows a rearranged room. Your ONLY task is to refine its visual quality: improve photorealism, lighting accuracy, and material rendering. Do NOT move, add, remove, or restyle any furniture — keep every piece in the exact position and appearance already shown in this image. Do NOT change the room shape, walls, windows, doors, or camera angle. This is a quality-enhancement pass only.';
 
     ensurePhotoUploaded(function(url) {
-      callGenerate(url, promptToUse, guidanceScale, strength);
+      callGenerate(url, promptToUse, guidanceScale, strength, refinementPrompt);
     });
   }
 </script>
