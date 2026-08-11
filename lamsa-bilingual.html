@@ -894,6 +894,15 @@
     display: flex; align-items: center; justify-content: center;
     position: relative;
   }
+  /* Once an actual result (image + Save/Share row, doubled when comparing
+     two models) is injected, the placeholder's fixed 16:9 flex-row box
+     would lay every child out side-by-side in a clipped strip instead of
+     stacking them — switch to a block layout that grows with the content. */
+  .result-img-wrap.has-result {
+    aspect-ratio: auto;
+    display: block;
+    overflow: visible;
+  }
   .result-placeholder {
     text-align: center;
     color: var(--gray);
@@ -1056,6 +1065,9 @@
     #form-section > .stats,
     footer { display: none; }
     #form-section { padding-top: 168px; }
+    /* Before/After result: side-by-side halves each image on a phone —
+       stack them full-width instead so the result is actually visible. */
+    .before-after-grid { grid-template-columns: 1fr !important; }
   }
 </style>
 </head>
@@ -2590,6 +2602,7 @@
     if (document.getElementById('resultPlaceholder')) return;
     var genText = currentLang === 'ar' ? 'جاري توليد تصميمك...' : 'Generating your design...';
     var genSub  = currentLang === 'ar' ? 'يستغرق 15-30 ثانية' : 'Takes 15-30 seconds';
+    document.getElementById('resultImg').classList.remove('has-result');
     document.getElementById('resultImg').innerHTML =
       '<div class="result-placeholder" id="resultPlaceholder">' +
         '<div class="rp-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>' +
@@ -2989,16 +3002,17 @@
 
           var imgWrap = document.getElementById('resultImg');
           imgWrap.innerHTML = '';
+          imgWrap.classList.add('has-result');
 
           // Download helper function
           function createDownloadBtn(url, filename) {
             var wrap = document.createElement('div');
-            wrap.style.cssText = 'display:flex;gap:10px;margin:10px 0;';
+            wrap.style.cssText = 'display:flex;gap:8px;margin:8px 0;';
 
             // Share/Save button (works on mobile to save to gallery)
             var saveBtn = document.createElement('button');
             saveBtn.style.cssText = 'flex:1;background:var(--gold);color:var(--black);border:none;' +
-              'padding:14px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;' +
+              'padding:10px;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;' +
               'font-family:Tajawal,sans-serif;transition:all 0.2s;';
             var saveTxt = currentLang === 'ar' ? 'حفظ الصورة' :
               currentLang === 'de' ? 'Bild speichern' :
@@ -3022,7 +3036,7 @@
             // Share button
             var shareBtn = document.createElement('button');
             shareBtn.style.cssText = 'background:transparent;color:var(--gold);border:1.5px solid var(--gold);' +
-              'padding:14px 18px;border-radius:10px;font-weight:900;font-size:14px;cursor:pointer;' +
+              'padding:10px 14px;border-radius:10px;font-weight:900;font-size:13px;cursor:pointer;' +
               'font-family:Tajawal,sans-serif;transition:all 0.2s;white-space:nowrap;';
             shareBtn.innerHTML = (window.icon ? window.icon('share') : '') + ' ' + (currentLang === 'ar' ? 'مشاركة' : 'Share');
             shareBtn.onclick = function() {
@@ -3041,6 +3055,7 @@
 
           if (beforeAfterOn) {
             var beforeAfterDiv = document.createElement('div');
+            beforeAfterDiv.className = 'before-after-grid';
             beforeAfterDiv.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;';
 
             var beforeDiv = document.createElement('div');
