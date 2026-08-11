@@ -2756,6 +2756,12 @@
       ' DO NOT add, move, or remove architectural elements (windows, doors, walls, structural beams).' +
       ' This is a ' + roomTypeLabel + ' — only use furniture appropriate for this room type.' +
 
+      // ── STRUCTURAL LOCK ──
+      '\n\n=== STRUCTURAL LOCK (ABSOLUTE — DO NOT VIOLATE) ===' +
+      '\nThe walls, windows, and doors in the original photo are FIXED and must remain 100% identical in the output: same positions, same sizes, same count, same shapes, same camera angle and perspective.' +
+      '\nYou are ONLY allowed to change: furniture, decor, colors, materials, lighting fixtures, and finishes.' +
+      '\nYou are NOT allowed to change: the room\'s architecture, wall layout, window placement/count/size, door placement/count/size, ceiling height, or camera perspective — even if the chosen style or furniture list would normally suggest a different room shape.' +
+
       // ── ROOM CONTEXT ──
       '\n\n=== ROOM CONTEXT ===' +
       '\nRoom Type: ' + roomTypeLabel +
@@ -2808,7 +2814,8 @@
       '\n• Sharp focus, correct perspective, accurate shadows and reflections.' +
       '\n• Real furniture proportions — nothing oversized or undersized for the room dimensions.' +
       '\n• Visible styling details: throw pillows, plants, books, art, small decor objects that match the chosen style.' +
-      '\n\nAVOID: changing room geometry, altering window/door count, adding extra rooms, cartoon or illustration look, visible AI artifacts, floating furniture, wrong scale objects.';
+      '\n\nAVOID: changing room geometry, altering window/door count, adding extra rooms, cartoon or illustration look, visible AI artifacts, floating furniture, wrong scale objects.' +
+      '\n\nFINAL REMINDER: the walls, windows, and doors from the original photo are fixed and non-negotiable — 100% identical in the output. Only furniture, decor, colors, and finishes change.';
 
     // ── REARRANGE-ONLY PROMPT ──
     // Keeps every existing furniture piece exactly as photographed and only changes its position/layout.
@@ -2851,7 +2858,8 @@
     var refinementPrompt =
       'This photo already shows a fully redesigned ' + roomTypeLabel + (styleText ? ' in ' + styleText + ' style' : '') + '.' +
       ' Your ONLY task is to refine its visual quality: improve photorealism, lighting accuracy, material and texture rendering, and how objects relate to light and each other.' +
-      ' Do NOT change anything about the room itself — keep the exact same camera angle and perspective, the exact same room shape, wall count, window count, door count, and proportions, and the exact same furniture pieces already shown in this image, in their exact same positions.' +
+      ' The walls, windows, and doors shown in this image are FIXED and must remain 100% identical in your output: same positions, same sizes, same count, same shapes, same camera angle and perspective.' +
+      ' Do NOT change anything about the room itself — keep the exact same room shape, wall count, window count, door count, and proportions, and the exact same furniture pieces already shown in this image, in their exact same positions.' +
       ' Do not add, remove, move, or restyle any object. This is a quality-enhancement pass only, not a redesign.';
 
     // Compress image before upload (max 1280px, JPEG) — much faster upload & generation
