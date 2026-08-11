@@ -1,5 +1,6 @@
 import { redis, deductCredit, addCredits, ensureWelcomeCredit } from './_db.js';
 import { requireSessionEmail } from './_auth.js';
+import { randomUUID } from 'crypto';
 
 // Temporary QA bypass while the team tests the redesign-strength fix and
 // other in-flight UI work without burning through the single free credit.
@@ -7,24 +8,17 @@ import { requireSessionEmail } from './_auth.js';
 // abused by other users while active. Remove once testing is done.
 const CREDIT_BYPASS_EMAILS = new Set(['team@smartordi.eu']);
 
-// Every generation now compares two different AIs' takes on the same room
-// instead of trusting a single model — Flux Kontext Pro (fast, cheap,
-// consistent) alongside Nano Banana Pro (Gemini 3 Pro Image; better at
-// reasoning about lighting/object relationships). The user picks whichever
-// result looks best. Combined cost is still well under what a single credit
-// sells for, so this runs unconditionally rather than as an opt-in.
+// Two-stage pipeline instead of two independent models racing on the same
+// source photo: Flux Kontext Pro (fast, cheap, consistent) does the first
+// full redesign pass, then Nano Banana Pro (Gemini 3 Pro Image; better at
+// reasoning about lighting/object relationships) polishes THAT result
+// instead of starting over from the original photo. One coherent final
+// image instead of two independent, sometimes unrelated, opinions.
 const FLUX_SUBMIT_URL = 'https://queue.fal.run/fal-ai/flux-pro/kontext';
 const NANO_SUBMIT_URL = 'https://queue.fal.run/fal-ai/nano-banana-pro/edit';
 
-// Splits the requested image count across both models so every generation
-// includes at least one result from each — even a single requested image
-// becomes one from each model, guaranteeing a comparison — rather than ever
-// coming back as one model's opinion alone.
-function splitCounts(total) {
-  const n = Math.max(1, Number(total) || 1);
-  if (n === 1) return { flux: 1, nano: 1 };
-  const nano = Math.floor(n / 2);
-  return { flux: n - nano, nano };
+function refineTokenKey(token) {
+  return 'lamsa:refine:' + token;
 }
 
 function buildFluxBody({ prompt, image_url, count, guidance_scale, aspect_ratio, strength }) {
@@ -97,7 +91,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'FAL_API_KEY not configured' });
   }
 
-  const { prompt, image_url, num_images = 1, guidance_scale = 3.5, aspect_ratio = '16:9', strength } = req.body;
+  const { prompt, image_url, num_images = 1, guidance_scale = 3.5, aspect_ratio = '16:9', strength, refine_token } = req.body;
 
   if (!prompt) return res.status(400).json({ error: 'prompt is required' });
 
@@ -114,6 +108,44 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Please log in', code: 'not_logged_in' });
   }
 
+  // === REFINE STAGE ===
+  // The frontend calls back in here with a token minted by the initial
+  // stage below, once Flux's own result is ready, asking Nano Banana Pro to
+  // polish it. No credit is deducted here — the whole two-stage pipeline
+  // costs 1 credit total, charged up front in the initial stage. The token
+  // is tied to the session that paid for it and only good for as many
+  // calls as images Flux actually produced (up to 3, when the user asked
+  // for multiple design variations), so this branch can't be called on its
+  // own as a free generation.
+  if (refine_token) {
+    if (!image_url) return res.status(400).json({ error: 'image_url is required for the refine stage' });
+
+    const tokenKey = refineTokenKey(refine_token);
+    const tokenData = await redis.get(tokenKey);
+    if (!tokenData || tokenData.email !== normalizedEmail || tokenData.remaining <= 0) {
+      return res.status(403).json({ error: 'Invalid or expired refine token' });
+    }
+
+    const remaining = tokenData.remaining - 1;
+    if (remaining <= 0) {
+      await redis.del(tokenKey);
+    } else {
+      await redis.set(tokenKey, { email: normalizedEmail, remaining }, { ex: 600 });
+    }
+
+    const nanoBody = buildNanoBody({ prompt, image_url, count: 1 });
+    console.log('[api/generate] refine stage — submitting to nano-banana-pro:', JSON.stringify(nanoBody));
+
+    try {
+      const request_id = await submitToFal(FAL_API_KEY, NANO_SUBMIT_URL, nanoBody);
+      return res.status(200).json({ requests: [{ model: 'nano', request_id }] });
+    } catch (err) {
+      console.error('[api/generate] refine submit failed:', err.message);
+      return res.status(502).json({ error: err.message });
+    }
+  }
+
+  // === INITIAL STAGE ===
   // Defensive fallback — the welcome credit is normally granted right at
   // registration, but this covers any account that predates that or was
   // created some other way. A no-op if the balance already exists.
@@ -132,70 +164,37 @@ export default async function handler(req, res) {
   }
   console.log('[api/generate] deducted 1 credit from', normalizedEmail, '- remaining:', newBalance);
 
-  // Wrapped separately from the main try/catch below so a failure in the
-  // refund call itself can't fall into that catch block and trigger a
-  // second refund attempt for the same failed request.
-  async function refundCredit() {
-    try {
-      await addCredits(normalizedEmail, 1);
-    } catch (refundErr) {
-      console.error('[api/generate] refund failed for', normalizedEmail, '-', refundErr.message);
-    }
-  }
-
   // Submit to the fal.ai QUEUE instead of the synchronous endpoint. These
   // generations regularly take 15-30s+, which exceeds Vercel's serverless
   // function timeout on the sync endpoint (the function gets killed
   // mid-request and the frontend is left spinning forever). The queue
   // endpoint returns a request_id immediately; the frontend polls
-  // /api/status for completion.
-  const counts = splitCounts(num_images);
+  // /api/status for completion, then calls back in here with a
+  // refine_token once Flux's result is ready.
+  const count = Math.max(1, Number(num_images) || 1);
+  const fluxBody = buildFluxBody({ prompt, image_url, count, guidance_scale, aspect_ratio, strength });
+  console.log('[api/generate] submitting to flux:', JSON.stringify(fluxBody));
 
-  const submissions = [];
-  if (counts.flux > 0) {
-    const fluxBody = buildFluxBody({ prompt, image_url, count: counts.flux, guidance_scale, aspect_ratio, strength });
-    console.log('[api/generate] submitting to flux:', JSON.stringify(fluxBody));
-    submissions.push(
-      submitToFal(FAL_API_KEY, FLUX_SUBMIT_URL, fluxBody)
-        .then((request_id) => ({ model: 'flux', request_id }))
-        .catch((err) => {
-          console.error('[api/generate] flux submit failed:', err.message);
-          return { model: 'flux', error: err.message };
-        })
-    );
-  }
-  if (counts.nano > 0) {
-    const nanoBody = buildNanoBody({ prompt, image_url, count: counts.nano });
-    console.log('[api/generate] submitting to nano-banana-pro:', JSON.stringify(nanoBody));
-    submissions.push(
-      submitToFal(FAL_API_KEY, NANO_SUBMIT_URL, nanoBody)
-        .then((request_id) => ({ model: 'nano', request_id }))
-        .catch((err) => {
-          console.error('[api/generate] nano-banana-pro submit failed:', err.message);
-          return { model: 'nano', error: err.message };
-        })
-    );
-  }
-
-  let results;
+  let request_id;
   try {
-    results = await Promise.all(submissions);
+    request_id = await submitToFal(FAL_API_KEY, FLUX_SUBMIT_URL, fluxBody);
   } catch (err) {
-    // Promise.all itself only rejects on a bug above (both branches already
-    // catch their own errors into { error } objects) — treat it the same as
-    // a total failure.
-    console.error('[api/generate] unexpected submit error:', err.message);
-    await refundCredit();
-    return res.status(500).json({ error: err.message });
+    console.error('[api/generate] flux submit failed:', err.message);
+    try {
+      await addCredits(normalizedEmail, 1);
+    } catch (refundErr) {
+      console.error('[api/generate] refund failed for', normalizedEmail, '-', refundErr.message);
+    }
+    return res.status(502).json({ error: err.message });
   }
 
-  const requests = results.filter((r) => r.request_id);
-  console.log('[api/generate] submit results:', JSON.stringify(results));
+  const refineToken = randomUUID();
+  // 10 minutes comfortably covers the ~2.5 minute max poll window for
+  // Flux's own result plus normal user latency before the frontend calls
+  // back in for the refine stage. `remaining` allows one refine call per
+  // image Flux actually produces (the frontend requested `count`, but a
+  // partial fal.ai response could return fewer).
+  await redis.set(refineTokenKey(refineToken), { email: normalizedEmail, remaining: count }, { ex: 600 });
 
-  if (requests.length === 0) {
-    await refundCredit(); // neither job was actually queued
-    return res.status(502).json({ error: 'Generation failed', details: results });
-  }
-
-  return res.status(200).json({ requests });
+  return res.status(200).json({ requests: [{ model: 'flux', request_id }], refineToken });
 }
