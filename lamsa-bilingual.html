@@ -1118,7 +1118,8 @@
   @media (max-width: 600px) {
     nav { padding: 12px 16px; flex-wrap: wrap; row-gap: 10px; }
     .nav-right { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-    .panel { padding: 24px 16px; }
+    .panel { padding: 18px 16px; }
+    .panel-sub { margin-bottom: 24px; }
     .form-grid { grid-template-columns: 1fr; }
     .layout-grid { grid-template-columns: repeat(2, 1fr); }
     /* Mobile: skip the hero screen (CTA buttons + marketing copy)
@@ -1130,7 +1131,7 @@
     /* nav is position:fixed and wraps to 2 rows on mobile (~137px tall) —
        this padding-top needs to clear that, with room left over for the
        ambient photo band below. */
-    #form-section { padding-top: 168px; position: relative; overflow: hidden; }
+    #form-section { padding-top: 232px; position: relative; overflow: hidden; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
@@ -1141,7 +1142,7 @@
        strips running the full page height — reads as a rendering glitch,
        not ambience). The card itself stays fully opaque either way, so
        form fields are never affected. */
-    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 216px; z-index: 0; }
+    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 280px; z-index: 0; }
     /* No text sits on this band on mobile (the badge/title/sub stay hidden
        here), so there's no legibility reason to blur or darken the photo —
        show it clearly, only darkening right at the bottom edge so it blends
