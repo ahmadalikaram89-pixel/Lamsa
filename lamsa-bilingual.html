@@ -1142,8 +1142,11 @@
        not ambience). The card itself stays fully opaque either way, so
        form fields are never affected. */
     .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 216px; z-index: 0; }
-    .form-bg-stack .hero-layer { filter: blur(3px) brightness(0.75) saturate(0.9); }
-    .form-bg-scrim { background: linear-gradient(180deg, rgba(20,22,26,0.5) 0%, rgba(20,22,26,0.35) 60%, rgba(20,22,26,0.7) 100%); }
+    /* No text sits on this band on mobile (the badge/title/sub stay hidden
+       here), so there's no legibility reason to blur or darken the photo —
+       show it clearly, only darkening right at the bottom edge so it blends
+       into the card instead of cutting off hard. */
+    .form-bg-scrim { background: linear-gradient(180deg, rgba(20,22,26,0.02) 0%, rgba(20,22,26,0.05) 70%, rgba(20,22,26,0.4) 100%); }
   }
 </style>
 </head>
