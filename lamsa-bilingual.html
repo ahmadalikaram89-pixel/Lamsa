@@ -1120,6 +1120,19 @@
     .nav-right { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
     .panel { padding: 18px 16px; }
     .panel-sub { margin-bottom: 24px; }
+    /* Cardless wizard — the big enclosing rectangle around the tab strip
+       and form is gone. Individual elements (tab pills, inputs, chips,
+       buttons) already carry their own border, so they stay tappable/
+       readable without a wrapping box. */
+    .steps-wrap { background: none; border: none; border-radius: 0; overflow: visible; }
+    .progress-bar { gap: 8px; padding-bottom: 2px; }
+    .progress-step {
+      flex: 0 0 auto; min-width: 64px;
+      border: 1px solid var(--border); border-radius: 12px; background: var(--card);
+    }
+    .progress-step:last-child { border-left: 1px solid var(--border); }
+    .progress-step.active { background: var(--gold-deep); color: #fff; }
+    .progress-step.active::after { display: none; }
     .form-grid { grid-template-columns: 1fr; }
     .layout-grid { grid-template-columns: repeat(2, 1fr); }
     /* Mobile: skip the hero screen (CTA buttons + marketing copy)
@@ -1140,8 +1153,9 @@
        just the top padding band above the card (NOT inset:0, which would
        also bleed down the card's left/right side margins as thin vertical
        strips running the full page height — reads as a rendering glitch,
-       not ambience). The card itself stays fully opaque either way, so
-       form fields are never affected. */
+       not ambience). Its fixed height means it never reaches the form
+       content below, so removing the card's own background (above) never
+       exposes the photo behind any text or fields. */
     .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 280px; z-index: 0; }
     /* No text sits on this band on mobile (the badge/title/sub stay hidden
        here), so there's no legibility reason to blur or darken the photo —
