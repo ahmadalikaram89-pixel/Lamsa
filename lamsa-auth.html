@@ -77,68 +77,99 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    background:
-      radial-gradient(ellipse 90% 60% at 15% 0%, rgba(107,116,128,0.14) 0%, transparent 55%),
-      radial-gradient(ellipse 70% 60% at 100% 100%, rgba(107,116,128,0.08) 0%, transparent 60%),
-      linear-gradient(165deg, #fffdf9 0%, #f6f1e6 55%, #f1ead9 100%);
+    isolation: isolate;
+    background: #221f1a;
     border-right: 1px solid var(--border-soft);
   }
 
-  .left-panel::before {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(107,116,128,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 80% 20%, rgba(107,116,128,0.05) 0%, transparent 60%);
+  /* Animated before/after background — same mechanic as the main site's
+     hero (lamsa-bilingual.html), reused here so the login screen shows the
+     product instead of an abstract pattern. Tags are skipped (showTags:
+     false) since they'd collide with the brand row pinned to the same top
+     corner. */
+  .hero-bg-stack { position: absolute; inset: 0; z-index: 0; }
+  .hero-pair { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+  .hero-pair.active { opacity: 1; }
+  .hero-pair-zoom { position: absolute; inset: -3%; }
+  .hero-pair.active .hero-pair-zoom { animation: heroKenburns 9s ease-in-out forwards; }
+  @keyframes heroKenburns { 0% { transform: scale(1.02); } 100% { transform: scale(1.08); } }
+
+  .hero-layer { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .hero-layer-after { clip-path: inset(0 100% 0 0); }
+  .hero-pair.active .hero-layer-after { animation: heroWipeReveal 9s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes heroWipeReveal {
+    0%   { clip-path: inset(0 100% 0 0); }
+    38%  { clip-path: inset(0 100% 0 0); }
+    66%  { clip-path: inset(0 0% 0 0); }
+    100% { clip-path: inset(0 0% 0 0); }
+  }
+  .hero-edge {
+    position: absolute; top: 0; bottom: 0; width: 3px;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 0 18px 2px rgba(255,255,255,0.55);
+    opacity: 0;
+  }
+  .hero-pair.active .hero-edge { animation: heroEdgeSweep 9s cubic-bezier(.65,0,.35,1) forwards; }
+  @keyframes heroEdgeSweep {
+    0%   { left: 0%; opacity: 0; }
+    36%  { left: 0%; opacity: 0; }
+    38%  { opacity: 1; }
+    66%  { left: 100%; opacity: 1; }
+    68%  { opacity: 0; }
+    100% { left: 100%; opacity: 0; }
+  }
+  .hero-tag {
+    position: absolute; top: 20px; z-index: 1;
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px;
+    background: rgba(0,0,0,0.35); backdrop-filter: blur(6px);
+    color: rgba(255,255,255,0.92);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .hero-tag-before { inset-inline-start: 20px; }
+  .hero-tag-after { inset-inline-end: 20px; }
+  .hero-pair.active .hero-tag-before { animation: heroTagBefore 9s linear forwards; }
+  .hero-pair.active .hero-tag-after { animation: heroTagAfter 9s linear forwards; }
+  @keyframes heroTagBefore { 0%{opacity:1} 34%{opacity:1} 40%{opacity:0} 100%{opacity:0} }
+  @keyframes heroTagAfter { 0%{opacity:0} 64%{opacity:0} 70%{opacity:1} 100%{opacity:1} }
+
+  .hero-scrim {
+    position: absolute; inset: 0; z-index: 0;
+    background: linear-gradient(180deg, rgba(15,14,12,0.55) 0%, rgba(15,14,12,0.28) 40%, rgba(15,14,12,0.38) 68%, rgba(15,14,12,0.72) 100%);
   }
 
-  .glow-a { position:absolute; width:420px; height:420px; border-radius:50%;
-    background: radial-gradient(circle, rgba(107,116,128,0.16) 0%, transparent 70%);
-    top: -150px; inset-inline-start: -140px; filter: blur(10px); pointer-events:none; }
-  .glow-b { position:absolute; width:360px; height:360px; border-radius:50%;
-    background: radial-gradient(circle, rgba(107,116,128,0.12) 0%, transparent 70%);
-    bottom: -120px; inset-inline-end: -100px; filter: blur(10px); pointer-events:none; }
-
-  .left-grid {
-    position: absolute; inset: 0; opacity: 0.05;
-    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
-    background-size: 46px 46px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 0%, transparent 75%);
+  @media (prefers-reduced-motion: reduce) {
+    .hero-pair.active .hero-pair-zoom, .hero-pair.active .hero-layer-after, .hero-pair.active .hero-edge,
+    .hero-pair.active .hero-tag-before, .hero-pair.active .hero-tag-after { animation: none; }
+    .hero-pair.active .hero-layer-after { clip-path: inset(0 0% 0 0); }
   }
-
-  .motif {
-    position: absolute; inset-inline-end: -80px; top: 50%; transform: translateY(-50%);
-    width: 380px; height: 380px; pointer-events: none; opacity: 0.5;
-  }
-  .motif svg { width: 100%; height: 100%; }
-  .motif .motif-rings { transform-box: fill-box; transform-origin: center; animation: motif-spin 18s linear infinite; }
-  .motif .motif-diamond { transform-box: fill-box; transform-origin: center; animation: motif-spin-reverse 13s linear infinite; }
-  @keyframes motif-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes motif-spin-reverse { from { transform: rotate(45deg); } to { transform: rotate(-315deg); } }
 
   .brand {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: auto;
     position: relative;
+    z-index: 1;
   }
   .brand-icon {
     width: 42px; height: 42px;
-    border: 1.5px solid var(--gold);
+    border: 1.5px solid rgba(255,255,255,0.55);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 18px;
-    background: linear-gradient(160deg, rgba(107,116,128,0.14), transparent);
-    box-shadow: 0 0 0 1px rgba(107,116,128,0.08), 0 8px 20px rgba(61,67,75,0.14);
+    background: rgba(255,255,255,0.14);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   }
   .brand-name {
     font-family: 'Playfair Display', serif;
     font-size: 22px; font-weight: 700;
     letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.35);
   }
 
   .left-content {
     position: relative;
+    z-index: 1;
     margin-top: auto;
     padding-bottom: 20px;
   }
@@ -146,14 +177,14 @@
   .eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-    color: var(--gold-deep);
-    background: var(--gold-dim);
-    border: 1px solid var(--border-soft);
+    color: #fff;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.32);
     padding: 7px 14px 7px 10px;
     border-radius: 30px;
     margin-bottom: 22px;
   }
-  .eyebrow .dot { width:6px; height:6px; border-radius:50%; background: var(--gold); flex-shrink:0; }
+  .eyebrow .dot { width:6px; height:6px; border-radius:50%; background: var(--gold-light); flex-shrink:0; }
 
   .left-title {
     font-family: 'Playfair Display', serif;
@@ -161,16 +192,19 @@
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 16px;
+    color: #fff;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.35);
   }
   .left-title .gold {
     font-style: italic;
-    background: linear-gradient(90deg, var(--gold-light), var(--gold-deep));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+    color: var(--gold-light);
+    background: none; -webkit-background-clip: initial; background-clip: initial;
   }
 
   .left-sub {
     font-size: 14px;
-    color: var(--gray);
+    color: rgba(255,255,255,0.86);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.3);
     line-height: 1.7;
     margin-bottom: 32px;
   }
@@ -178,13 +212,13 @@
   .feature-list { display: flex; flex-direction: column; gap: 12px; }
   .feature-item {
     display: flex; align-items: center; gap: 12px;
-    font-size: 13px; color: var(--light);
+    font-size: 13px; color: rgba(255,255,255,0.9);
   }
   .feature-dot {
     width: 28px; height: 28px;
     border-radius: 8px;
-    background: var(--gold-dim);
-    border: 1px solid var(--border-soft);
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.3);
     display: flex; align-items: center; justify-content: center;
     font-size: 14px;
     flex-shrink: 0;
@@ -482,36 +516,72 @@
   .strength-label { font-size: 10px; color: var(--gray); margin-top: 4px; text-align: left; }
 
   /* SUCCESS STATE */
+  /* Success/welcome screen: no input fields to protect, so — unlike the
+     login card — it gets the full photo treatment like the desktop hero.
+     .auth-box.success-mode (toggled in showSuccess()/closeSuccess()) drops
+     the card chrome and lets the box grow to fill the right panel. */
+  .auth-box.success-mode {
+    max-width: 460px;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: 0 30px 70px -25px rgba(20,18,15,0.4);
+  }
+  .auth-box.success-mode::before { display: none; }
+
   .success-box {
     display: none;
     position: relative;
+    overflow: hidden;
+    isolation: isolate;
     text-align: center;
-    padding: 40px 20px;
+    height: min(560px, 74vh);
+    border-radius: 24px;
+    background: #221f1a;
     animation: fadeUp 0.5s ease;
   }
   .success-box.show { display: block; }
+  .success-content {
+    position: relative; z-index: 1;
+    height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding: 0 28px 34px;
+  }
   .success-close {
     position: absolute;
-    top: 0; inset-inline-end: 0;
+    top: 16px; inset-inline-end: 16px;
+    z-index: 2;
     width: 32px; height: 32px;
-    background: var(--dark);
-    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.35);
     border-radius: 50%;
-    color: var(--gray);
+    color: #fff;
     font-size: 16px;
     line-height: 1;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
   }
-  .success-close:hover { border-color: var(--gold); color: var(--gold-deep); }
-  .success-icon { font-size: 48px; margin-bottom: 16px; display: inline-block; animation: icon-twinkle 1.8s ease-in-out infinite; color: var(--gold); }
-  @keyframes icon-twinkle {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.75; }
-    50% { transform: scale(1.22) rotate(12deg); opacity: 1; }
+  .success-close:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.22); }
+  .success-icon {
+    font-size: 40px; margin-bottom: 14px; display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.35);
+    color: #fff; animation: icon-twinkle 1.8s ease-in-out infinite;
   }
-  .success-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-  .success-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
+  .success-icon svg { width: 24px; height: 24px; }
+  @keyframes icon-twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+    50% { transform: scale(1.1) rotate(8deg); opacity: 1; }
+  }
+  .success-title {
+    font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 8px;
+    color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,0.4);
+  }
+  .success-sub {
+    font-size: 13.5px; color: rgba(255,255,255,0.88); text-shadow: 0 1px 12px rgba(0,0,0,0.3);
+    margin-bottom: 22px; max-width: 34ch;
+  }
   .success-btn {
     position: relative; overflow: hidden;
     background: linear-gradient(135deg, #eef0f2 0%, var(--gold-light) 18%, var(--gold) 45%, var(--gold-deep) 70%, var(--gold) 88%, #eef0f2 100%);
@@ -620,20 +690,8 @@
 
 <!-- LEFT PANEL -->
 <div class="left-panel">
-  <div class="glow-a"></div>
-  <div class="glow-b"></div>
-  <div class="left-grid"></div>
-  <div class="motif">
-    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g class="motif-rings">
-        <circle cx="200" cy="200" r="180" stroke="#6b7480" stroke-width="0.6"/>
-        <circle cx="200" cy="200" r="140" stroke="#6b7480" stroke-width="0.6"/>
-        <circle cx="200" cy="200" r="100" stroke="#6b7480" stroke-width="1"/>
-        <path d="M200 60 L200 340 M60 200 L340 200" stroke="#6b7480" stroke-width="0.4"/>
-      </g>
-      <rect class="motif-diamond" x="120" y="120" width="160" height="160" stroke="#6b7480" stroke-width="0.8" transform="rotate(45 200 200)"/>
-    </svg>
-  </div>
+  <div class="hero-bg-stack" id="authBgStack"></div>
+  <div class="hero-scrim"></div>
 
   <div class="brand">
     <div class="brand-icon"><img src="assets/logo-mark.png" alt="" style="max-width:75%;max-height:75%;object-fit:contain;"></div>
@@ -670,7 +728,7 @@
 
 <!-- RIGHT PANEL -->
 <div class="right-panel">
-  <div class="auth-box">
+  <div class="auth-box" id="authBox">
 
     <!-- TABS -->
     <div class="auth-tabs" id="authTabs">
@@ -781,11 +839,15 @@
 
     <!-- SUCCESS STATE -->
     <div class="success-box" id="successBox">
+      <div class="hero-bg-stack" id="successBgStack"></div>
+      <div class="hero-scrim"></div>
       <button type="button" class="success-close" onclick="closeSuccess()" aria-label="Close">×</button>
-      <div class="success-icon"><svg class="icon-svg" viewBox="0 0 24 24" style="width:1em;height:1em;"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill="currentColor" stroke="none"/></svg></div>
-      <div class="success-title">أهلاً بك في لمستي!</div>
-      <div class="success-sub">تم إنشاء حسابك بنجاح. ابدأ الآن بتصميم غرفتك الأولى.</div>
-      <button class="success-btn" onclick="goToApp()">ابدأ التصميم <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></button>
+      <div class="success-content">
+        <div class="success-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" fill="currentColor" stroke="none"/></svg></div>
+        <div class="success-title">أهلاً بك في لمستي!</div>
+        <div class="success-sub">تم إنشاء حسابك بنجاح. ابدأ الآن بتصميم غرفتك الأولى.</div>
+        <button class="success-btn" onclick="goToApp()">ابدأ التصميم <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></button>
+      </div>
     </div>
 
   </div>
@@ -1030,11 +1092,12 @@
     document.getElementById('formContent').style.display = 'none';
     document.getElementById('authTabs').style.display = 'none';
     document.getElementById('successBox').classList.add('show');
+    document.getElementById('authBox').classList.add('success-mode');
 
     // Update title with username
     if(username) {
       var titleEl = document.querySelector('.success-title');
-      if(titleEl) titleEl.innerHTML = (window.icon ? window.icon('wave') : '') + ' Welcome, <span style="color:var(--gold);">' + username + '!</span>';
+      if(titleEl) titleEl.innerHTML = (window.icon ? window.icon('wave') : '') + ' Welcome, <span style="color:var(--gold-light);">' + username + '!</span>';
     }
   }
 
@@ -1044,6 +1107,7 @@
 
   function closeSuccess() {
     document.getElementById('successBox').classList.remove('show');
+    document.getElementById('authBox').classList.remove('success-mode');
     document.getElementById('formContent').style.display = '';
     document.getElementById('authTabs').style.display = '';
   }
@@ -1330,7 +1394,78 @@
   // Set English on load
   window.addEventListener('DOMContentLoaded', function() {
     setLang('en');
+    initAuthBackground();
   });
+
+  var BG_CYCLE_PAIRS = [
+    { before: 'assets/hero-bg/pair1-before.jpg', after: 'assets/hero-bg/pair1-after.jpg' },
+    { before: 'assets/hero-bg/pair2-before.jpg', after: 'assets/hero-bg/pair2-after.jpg' },
+    { before: 'assets/hero-bg/pair3-before.jpg', after: 'assets/hero-bg/pair3-after.jpg' }
+  ];
+
+  // Same before/after wipe mechanic as the main site's hero background
+  // (lamsa-bilingual.html) — reused here for the login panel and the
+  // post-signup welcome screen. Both containers are built unconditionally
+  // on load, even though successBgStack only becomes visible after signup.
+  function buildBgCycle(containerId) {
+    var stackEl = document.getElementById(containerId);
+    if (!stackEl) return;
+
+    var pairs = [];
+    BG_CYCLE_PAIRS.forEach(function (p) {
+      var pair = document.createElement('div');
+      pair.className = 'hero-pair';
+
+      var zoom = document.createElement('div');
+      zoom.className = 'hero-pair-zoom';
+
+      var before = document.createElement('div');
+      before.className = 'hero-layer hero-layer-before';
+      before.style.backgroundImage = 'url(' + p.before + ')';
+
+      var after = document.createElement('div');
+      after.className = 'hero-layer hero-layer-after';
+      after.style.backgroundImage = 'url(' + p.after + ')';
+
+      var edge = document.createElement('div');
+      edge.className = 'hero-edge';
+
+      zoom.appendChild(before);
+      zoom.appendChild(after);
+      zoom.appendChild(edge);
+      pair.appendChild(zoom);
+
+      stackEl.appendChild(pair);
+      pairs.push(pair);
+    });
+
+    var current = -1;
+    var HOLD_MS = 9000;
+
+    function restartAnim(el) { if (el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; } }
+
+    function show(i) {
+      pairs.forEach(function (p, idx) {
+        p.classList.toggle('active', idx === i);
+        if (idx === i) {
+          restartAnim(p.querySelector('.hero-pair-zoom'));
+          restartAnim(p.querySelector('.hero-layer-after'));
+          restartAnim(p.querySelector('.hero-edge'));
+        }
+      });
+      current = i;
+    }
+
+    function next() { show((current + 1) % pairs.length); }
+
+    show(0);
+    setInterval(next, HOLD_MS);
+  }
+
+  function initAuthBackground() {
+    buildBgCycle('authBgStack');
+    buildBgCycle('successBgStack');
+  }
 </script>
 </body>
 </html>
