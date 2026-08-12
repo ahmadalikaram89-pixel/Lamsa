@@ -1120,6 +1120,11 @@
     .hero,
     #form-section > .stats,
     footer { display: none; }
+    /* nav is position:fixed and wraps to 2 rows on mobile (~137px tall) —
+       the default .section padding-top (80px) isn't enough clearance, so
+       the wizard card's rounded top corner was rendering underneath the
+       fixed nav instead of below it. */
+    #form-section { padding-top: 152px; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
