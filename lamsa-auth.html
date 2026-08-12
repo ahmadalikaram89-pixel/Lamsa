@@ -535,7 +535,7 @@
     overflow: hidden;
     isolation: isolate;
     text-align: center;
-    height: min(560px, 74vh);
+    height: min(640px, 80vh);
     border-radius: 24px;
     background: #221f1a;
     animation: fadeUp 0.5s ease;
@@ -659,7 +659,9 @@
   /* RESPONSIVE */
   @media (max-width: 700px) {
     body { height: auto; min-height: 100vh; flex-direction: column; overflow: visible; }
-    .left-panel { width: 100%; padding: 28px 20px; min-height: auto; }
+    /* min-height (not just padding) so the photo gets real room to show —
+       .brand/.left-content's auto margins then push apart to fill it. */
+    .left-panel { width: 100%; padding: 28px 20px; min-height: 480px; }
     .left-content { margin-top: 24px; }
     .feature-list { display: none; }
     .right-panel { flex: none; min-height: auto; overflow-y: visible; padding: 24px 16px; }
