@@ -666,6 +666,13 @@
     margin-top: 48px;
   }
 
+  /* Mobile-only ambient background behind the wizard — desktop already has
+     its own dedicated hero background and doesn't need this. Hidden by
+     default; the mobile media query below turns it on. Reuses the same
+     .hero-pair/.hero-layer/.hero-edge/.hero-tag mechanic, just mounted in a
+     different container. */
+  .form-bg-stack, .form-bg-scrim { display: none; }
+
   /* PROGRESS BAR */
   .progress-bar {
     display: flex;
@@ -1121,13 +1128,25 @@
     #form-section > .stats,
     footer { display: none; }
     /* nav is position:fixed and wraps to 2 rows on mobile (~137px tall) —
-       the default .section padding-top (80px) isn't enough clearance, so
-       the wizard card's rounded top corner was rendering underneath the
-       fixed nav instead of below it. */
-    #form-section { padding-top: 152px; }
+       this padding-top needs to clear that, with room left over for the
+       ambient photo band below. */
+    #form-section { padding-top: 168px; position: relative; overflow: hidden; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
+
+    /* Ambient before/after background behind the wizard — constrained to
+       just the top padding band above the card (NOT inset:0, which would
+       also bleed down the card's left/right side margins as thin vertical
+       strips running the full page height — reads as a rendering glitch,
+       not ambience). The card itself stays fully opaque either way, so
+       form fields are never affected. */
+    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 216px; z-index: 0; }
+    /* No text sits on this band on mobile (the badge/title/sub stay hidden
+       here), so there's no legibility reason to blur or darken the photo —
+       show it clearly, only darkening right at the bottom edge so it blends
+       into the card instead of cutting off hard. */
+    .form-bg-scrim { background: linear-gradient(180deg, rgba(20,22,26,0.02) 0%, rgba(20,22,26,0.05) 70%, rgba(20,22,26,0.4) 100%); }
   }
 </style>
 </head>
@@ -1182,6 +1201,9 @@
 
 <!-- FORM SECTION -->
 <section class="section" id="form-section">
+  <div class="form-bg-stack" id="formBgStack"></div>
+  <div class="form-bg-scrim"></div>
+
   <div class="stats">
     <div class="stat">
       <div class="stat-num">+5K</div>
@@ -3467,6 +3489,7 @@
 
   function initHeroBackground() {
     buildBgCycle('heroBgStack', true);
+    buildBgCycle('formBgStack', false);
   }
 
   // After a Stripe Checkout redirect back to this page, show a short status
