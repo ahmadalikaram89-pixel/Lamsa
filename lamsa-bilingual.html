@@ -3268,13 +3268,17 @@
               // cross-origin URLs (the image lives on fal.ai's own domain,
               // not ours) — it just navigates to/opens the image instead of
               // saving it, which is why this never actually saved anything.
-              // Fetching the full-size bytes ourselves and handing them off
-              // as a real file sidesteps that entirely: on iOS/Android this
-              // opens the native share sheet with a direct "Save Image" to
-              // the photo library; elsewhere it triggers a real file
-              // download via a same-origin blob URL (where `download` does
-              // work).
-              fetch(url)
+              // Fetching the bytes ourselves and handing them off as a real
+              // file sidesteps that: on iOS/Android this opens the native
+              // share sheet with a direct "Save Image" to the photo library;
+              // elsewhere it triggers a real file download via a same-origin
+              // blob URL (where `download` does work). Routed through our
+              // own /api/download-image proxy (not fetched from fal.ai
+              // directly) because fal.ai's CDN doesn't reliably send
+              // permissive CORS headers — a direct cross-origin fetch() can
+              // get silently blocked by the browser, which was still
+              // happening on desktop even after this fix first shipped.
+              fetch('/api/download-image?url=' + encodeURIComponent(url) + '&filename=' + encodeURIComponent(filename))
                 .then(function(resp) { return resp.blob(); })
                 .then(function(blob) {
                   var file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
