@@ -468,13 +468,32 @@
       'font-family:Tajawal,sans-serif;transition:all 0.2s;';
     saveBtn.innerHTML = (window.icon ? window.icon('download') : '') + ' Save Image';
     saveBtn.onclick = function() {
-      var link = document.createElement('a');
-      link.href = url; // the direct fal.ai image URL
-      link.download = filename;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // `download` on an <a> is silently ignored for cross-origin URLs (the
+      // image lives on fal.ai's domain, not ours), so this used to just
+      // open the image instead of saving it. Routed through /api/download-
+      // image (fetches server-side, sidestepping CORS) then handed off as
+      // a real file: native share sheet on iOS/Android, real download via
+      // a same-origin blob URL everywhere else.
+      fetch('/api/download-image?url=' + encodeURIComponent(url) + '&filename=' + encodeURIComponent(filename))
+        .then(function(resp) { return resp.blob(); })
+        .then(function(blob) {
+          var file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            return navigator.share({ files: [file] });
+          }
+          var blobUrl = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
+        .catch(function(err) {
+          console.error('[save] failed, falling back to opening the image directly:', err);
+          window.open(url, '_blank');
+        });
     };
 
     var shareBtn = document.createElement('button');
