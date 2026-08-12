@@ -1144,7 +1144,7 @@
     /* nav is position:fixed and wraps to 2 rows on mobile (~137px tall) —
        this padding-top needs to clear that, with room left over for the
        ambient photo band below. */
-    #form-section { padding-top: 372px; position: relative; overflow: hidden; }
+    #form-section { padding-top: 509px; position: relative; overflow: hidden; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
@@ -1155,8 +1155,11 @@
        strips running the full page height — reads as a rendering glitch,
        not ambience). Its fixed height means it never reaches the form
        content below, so removing the card's own background (above) never
-       exposes the photo behind any text or fields. */
-    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 420px; z-index: 0; }
+       exposes the photo behind any text or fields.
+       top:137px (not 0) starts it right where the fixed nav ends — at
+       top:0 the nav's translucent/blurred background sat directly over
+       the band's top ~137px, hiding that much of the photo behind it. */
+    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 137px; left: 0; right: 0; height: 420px; z-index: 0; }
     /* No text sits on this band on mobile (the badge/title/sub stay hidden
        here), so there's no legibility reason to blur or darken the photo —
        show it clearly, only darkening right at the bottom edge so it blends
