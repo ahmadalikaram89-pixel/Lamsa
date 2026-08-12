@@ -666,15 +666,6 @@
     margin-top: 48px;
   }
 
-  /* Mobile-only ambient background behind the wizard — desktop already has
-     its own dedicated hero background and doesn't need this. Hidden by
-     default; the mobile media query below turns it on. Reuses the same
-     .hero-pair/.hero-layer/.hero-edge/.hero-tag mechanic, just mounted in a
-     different container and tuned much quieter (heavier blur, darker tint)
-     since this is meant to read as ambient texture around the wizard card,
-     not a focal showcase moment like the hero. */
-  .form-bg-stack, .form-bg-scrim { display: none; }
-
   /* PROGRESS BAR */
   .progress-bar {
     display: flex;
@@ -1129,23 +1120,9 @@
     .hero,
     #form-section > .stats,
     footer { display: none; }
-    #form-section { padding-top: 168px; position: relative; overflow: hidden; }
     /* Before/After result: side-by-side halves each image on a phone —
        stack them full-width instead so the result is actually visible. */
     .before-after-grid { grid-template-columns: 1fr !important; }
-
-    /* Ambient before/after background behind the wizard — constrained to
-       just the top padding band above the card (NOT inset:0, which would
-       also bleed down the card's left/right side margins as thin vertical
-       strips running the full page height — reads as a rendering glitch,
-       not ambience). The card itself stays fully opaque either way, so
-       form fields are never affected. */
-    .form-bg-stack, .form-bg-scrim { display: block; position: absolute; top: 0; left: 0; right: 0; height: 216px; z-index: 0; }
-    /* No text sits on this band on mobile (the badge/title/sub stay hidden
-       here), so there's no legibility reason to blur or darken the photo —
-       show it clearly, only darkening right at the bottom edge so it blends
-       into the card instead of cutting off hard. */
-    .form-bg-scrim { background: linear-gradient(180deg, rgba(20,22,26,0.02) 0%, rgba(20,22,26,0.05) 70%, rgba(20,22,26,0.4) 100%); }
   }
 </style>
 </head>
@@ -1200,9 +1177,6 @@
 
 <!-- FORM SECTION -->
 <section class="section" id="form-section">
-  <div class="form-bg-stack" id="formBgStack"></div>
-  <div class="form-bg-scrim"></div>
-
   <div class="stats">
     <div class="stat">
       <div class="stat-num">+5K</div>
@@ -3486,16 +3460,8 @@
     setInterval(next, HOLD_MS);
   }
 
-  // Desktop hero (its own showcase moment, with Before/After tags) and the
-  // mobile ambient background behind the wizard (no tags — the wizard card
-  // itself stays fully opaque, so this only ever shows in the surrounding
-  // padding/margins). Both run unconditionally; the inactive one is simply
-  // display:none via CSS for the current viewport, which costs a bit of
-  // upfront image loading but keeps this logic simple and avoids having to
-  // rebuild the cycle on resize/orientation change.
   function initHeroBackground() {
     buildBgCycle('heroBgStack', true);
-    buildBgCycle('formBgStack', false);
   }
 
   // After a Stripe Checkout redirect back to this page, show a short status
