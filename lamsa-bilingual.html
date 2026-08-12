@@ -814,6 +814,24 @@
   .layout-card .lc-name { font-size: 11px; color: var(--gray); font-weight: 600; }
   .layout-card.selected .lc-name { color: var(--gold); }
 
+  /* Shown when selected styles span more than one cultural/design group —
+     a soft nudge, not a block, since mixing is intentionally allowed. */
+  .style-clash-warning {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(214,158,46,0.10);
+    border: 1px solid rgba(214,158,46,0.35);
+    color: #9a6b1a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .style-clash-warning.show { display: flex; }
+  .style-clash-warning svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+
   /* BUDGET SLIDER */
   .budget-display {
     background: var(--black);
@@ -1440,19 +1458,19 @@
         <!-- MODERN -->
         <div class="style-section-label" data-icon="globe" data-en="Global / Modern" data-ar="عالمي / حديث">Global / Modern</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="modern contemporary interior design">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="modern" data-prompt="modern contemporary interior design">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/><path d="M10 20v-5h4v5"/></svg></div>
             <div class="lc-name" data-en="Modern" data-ar="عصري">Modern</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="minimalist interior design">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="modern" data-prompt="minimalist interior design">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg></div>
             <div class="lc-name" data-en="Minimal" data-ar="مينيمال">Minimal</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="industrial loft interior design">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="modern" data-prompt="industrial loft interior design">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.4-2-3.4-2.3.9a7.7 7.7 0 0 0-2.6-1.5L14 2h-4l-.5 2.4a7.7 7.7 0 0 0-2.6 1.5l-2.3-.9-2 3.4 2 1.4a7.6 7.6 0 0 0 0 3l-2 1.4 2 3.4 2.3-.9c.8.7 1.6 1.2 2.6 1.5L10 22h4l.5-2.6a7.7 7.7 0 0 0 2.6-1.5l2.3.9 2-3.4z"/></svg></div>
             <div class="lc-name" data-en="Industrial" data-ar="صناعي">Industrial</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="bohemian eclectic interior design">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="modern" data-prompt="bohemian eclectic interior design">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c-4.9 0-8.5 3.7-8.5 8.2 0 3.8 2.8 5.8 5.2 5.8.9 0 1.1-.5.6-1.2-.6-.9.1-1.6 1.1-1.6h2c3 0 6.1-2 6.1-6C18.5 5.8 15.6 3.5 12 3.5z"/><circle cx="8.3" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="10.3" r="1.1" fill="currentColor" stroke="none"/></svg></div>
             <div class="lc-name" data-en="Bohemian" data-ar="بوهيمي">Bohemian</div>
           </div>
@@ -1461,27 +1479,27 @@
         <!-- EUROPEAN -->
         <div class="style-section-label" data-en="🇪🇺 European" data-ar="🇪🇺 أوروبي">🇪🇺 European</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Scandinavian Nordic interior design warm wood white walls">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="Scandinavian Nordic interior design warm wood white walls">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c8-1 13-6 14-14-8 1-13 6-14 14z"/><path d="M6 18c3-3 6-6 12-12"/></svg></div>
             <div class="lc-name" data-en="Scandinavian" data-ar="سكاندنافي">Scandinavian</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="French classic elegant interior design ornate details">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="French classic elegant interior design ornate details">
             <div class="lc-icon">🇫🇷</div>
             <div class="lc-name" data-en="French Classic" data-ar="فرنسي كلاسيكي">French Classic</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Italian luxury interior design marble gold accents">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="Italian luxury interior design marble gold accents">
             <div class="lc-icon">🇮🇹</div>
             <div class="lc-name" data-en="Italian Luxury" data-ar="إيطالي فاخر">Italian Luxury</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Spanish Mediterranean interior design terracotta tiles arches">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="Spanish Mediterranean interior design terracotta tiles arches">
             <div class="lc-icon">🇪🇸</div>
             <div class="lc-name" data-en="Spanish / Mediterranean" data-ar="إسباني / متوسطي">Spanish / Mediterranean</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Victorian classic British interior design rich colors dark wood">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="Victorian classic British interior design rich colors dark wood">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V10l2-2V6h2v2l2-2V4h4v2l2-2v2h2v2l2 2v11z"/><path d="M4 21h16M9 21v-5h6v5"/></svg></div>
             <div class="lc-name" data-en="Victorian / British" data-ar="فيكتوري / بريطاني">Victorian / British</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="German Bauhaus minimal functional interior design">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="european" data-prompt="German Bauhaus minimal functional interior design">
             <div class="lc-icon">🇩🇪</div>
             <div class="lc-name" data-en="Bauhaus / German" data-ar="باوهاوس / ألماني">Bauhaus / German</div>
           </div>
@@ -1490,19 +1508,19 @@
         <!-- ORIENTAL -->
         <div class="style-section-label" data-icon="mosque" data-en="Oriental" data-ar="شرقي">Oriental</div>
         <div class="layout-grid" style="margin-bottom: 16px;">
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="luxury Arabic interior design gold ornaments arabesque patterns dark colors">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="oriental" data-prompt="luxury Arabic interior design gold ornaments arabesque patterns dark colors">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.6 1.4-1.6 3.6 0 5 1.6-1.4 1.6-3.6 0-5z"/><path d="M4 21V13a8 8 0 0 1 16 0v8"/><path d="M4 21h16M10 21v-6h4v6"/><path d="M4 13h3M17 13h3"/></svg></div>
             <div class="lc-name" data-en="Luxury Arabic" data-ar="عربي فاخر">Luxury Arabic</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Moroccan interior design zellige tiles lanterns warm colors arches">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="oriental" data-prompt="Moroccan interior design zellige tiles lanterns warm colors arches">
             <div class="lc-icon">🇲🇦</div>
             <div class="lc-name" data-en="Moroccan" data-ar="مغربي">Moroccan</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Turkish Ottoman interior design rich fabrics colorful tiles ornate">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="oriental" data-prompt="Turkish Ottoman interior design rich fabrics colorful tiles ornate">
             <div class="lc-icon">🇹🇷</div>
             <div class="lc-name" data-en="Turkish / Ottoman" data-ar="تركي / عثماني">Turkish / Ottoman</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Persian Iranian interior design ornate carpets gold details arched windows">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="oriental" data-prompt="Persian Iranian interior design ornate carpets gold details arched windows">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v3.5c0 1-3 2-3 5.5a5 5 0 0 0 10 0c0-3.5-3-4.5-3-5.5V3"/><path d="M7 21h10"/><path d="M8.5 21c-.6-2 .5-4 3.5-4s4.1 2 3.5 4"/></svg></div>
             <div class="lc-name" data-en="Persian / Iranian" data-ar="فارسي / إيراني">Persian / Iranian</div>
           </div>
@@ -1511,22 +1529,27 @@
         <!-- ASIAN -->
         <div class="style-section-label" data-icon="globe" data-en="Asian" data-ar="آسيوي">Asian</div>
         <div class="layout-grid" style="margin-bottom: 20px;">
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Japanese Japandi interior design zen minimalist natural wood neutral tones">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="asian" data-prompt="Japanese Japandi interior design zen minimalist natural wood neutral tones">
             <div class="lc-icon">🇯🇵</div>
             <div class="lc-name" data-en="Japanese / Zen" data-ar="ياباني / زن">Japanese / Zen</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Chinese traditional interior design red lacquer jade ornaments screens">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="asian" data-prompt="Chinese traditional interior design red lacquer jade ornaments screens">
             <div class="lc-icon">🇨🇳</div>
             <div class="lc-name" data-en="Classic Chinese" data-ar="صيني كلاسيكي">Classic Chinese</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Indian interior design vibrant colors silk textiles ornate carvings">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="asian" data-prompt="Indian interior design vibrant colors silk textiles ornate carvings">
             <div class="lc-icon">🇮🇳</div>
             <div class="lc-name" data-en="Indian" data-ar="هندي">Indian</div>
           </div>
-          <div class="layout-card" onclick="toggleCard(this)" data-prompt="Bali tropical interior design natural materials bamboo plants warm lighting">
+          <div class="layout-card" onclick="toggleCard(this)" data-style-group="asian" data-prompt="Bali tropical interior design natural materials bamboo plants warm lighting">
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11c0-4-3-6-8-6 1 4 3 6 8 6z"/><path d="M12 9c0-3.5 2.5-5.5 7-5.5-1 3.5-3 5.5-7 5.5z"/><path d="M12 13c0-3-2-5-6-5 .8 3 2.5 5 6 5z"/></svg></div>
             <div class="lc-name" data-en="Bali / Tropical" data-ar="بالي / استوائي">Bali / Tropical</div>
           </div>
+        </div>
+
+        <div class="style-clash-warning" id="styleClashWarning">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <span data-en="You've picked styles from very different traditions — mixing them may give a less coherent result." data-ar="اخترت ستايلات من ثقافات مختلفة كتير — دمجهم مع بعض ممكن يعطي نتيجة أقل تناسقاً.">You've picked styles from very different traditions — mixing them may give a less coherent result.</span>
         </div>
 
         <div class="form-group">
@@ -2500,7 +2523,24 @@
     parent.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('selected'); });
     el.classList.add('selected');
   }
-  function toggleCard(el) { el.classList.toggle('selected'); }
+  function toggleCard(el) {
+    el.classList.toggle('selected');
+    checkStyleClash();
+  }
+
+  // Style selection intentionally allows picking more than one (see the
+  // panel subtitle) — but mixing styles from very different cultural/
+  // design traditions (e.g. Bohemian + Classic Chinese) tends to confuse
+  // the AI into a muddled result. This just nudges, it never blocks.
+  function checkStyleClash() {
+    var groups = {};
+    document.querySelectorAll('.layout-card.selected').forEach(function(card) {
+      var g = card.getAttribute('data-style-group');
+      if (g) groups[g] = true;
+    });
+    var warning = document.getElementById('styleClashWarning');
+    if (warning) warning.classList.toggle('show', Object.keys(groups).length > 1);
+  }
 
   function selectCurrency(el, cur) {
     document.querySelectorAll('#panel-3 .currency-chip').forEach(function(c) { c.classList.remove('selected'); });
