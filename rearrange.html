@@ -502,8 +502,30 @@
       'font-family:Tajawal,sans-serif;transition:all 0.2s;white-space:nowrap;';
     shareBtn.innerHTML = (window.icon ? window.icon('share') : '') + ' Share';
     shareBtn.onclick = function() {
-      if (navigator.share) navigator.share({ title: 'Lamsa Rearranged Room', url: url }).catch(function() { window.open(url, '_blank'); });
-      else window.open(url, '_blank');
+      // Sharing { url } hands apps like WhatsApp a link, which they render
+      // as a page-preview card, not the photo itself. Fetching the actual
+      // bytes (via the same CORS-safe proxy as Save) and sharing them as a
+      // file makes WhatsApp/etc. attach the real image instead.
+      fetch('/api/download-image?url=' + encodeURIComponent(url) + '&filename=' + encodeURIComponent(filename))
+        .then(function(resp) { return resp.blob(); })
+        .then(function(blob) {
+          var file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            return navigator.share({ files: [file], title: 'Lamsa Rearranged Room' });
+          }
+          if (navigator.share) {
+            return navigator.share({ title: 'Lamsa Rearranged Room', url: url });
+          }
+          window.open(url, '_blank');
+        })
+        .catch(function(err) {
+          console.error('[share] failed, falling back to sharing the link:', err);
+          if (navigator.share) {
+            navigator.share({ title: 'Lamsa Rearranged Room', url: url }).catch(function() { window.open(url, '_blank'); });
+          } else {
+            window.open(url, '_blank');
+          }
+        });
     };
 
     wrap.appendChild(saveBtn);
