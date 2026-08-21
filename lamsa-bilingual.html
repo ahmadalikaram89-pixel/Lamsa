@@ -415,31 +415,6 @@
   .placement-body { flex: 1; }
   .placement-name { font-size: 13px; font-weight: 700; color: var(--light); }
 
-  /* CURRENCY GRID */
-  .currency-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .currency-chip {
-    background: var(--black);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 3px;
-  }
-  .currency-chip:hover { border-color: var(--gold); }
-  .currency-chip.selected { background: var(--gold-dim); border-color: var(--gold); }
-  .curr-flag { font-size: 18px; }
-  .curr-name { font-size: 10px; color: var(--gray); }
-  .curr-sym { font-size: 13px; font-weight: 900; color: var(--white); }
-  .currency-chip.selected .curr-sym { color: var(--gold); }
-
   .style-section-label {
     font-size: 12px; font-weight: 700;
     color: var(--gold); letter-spacing: 1px;
@@ -831,34 +806,6 @@
   }
   .style-clash-warning.show { display: flex; }
   .style-clash-warning svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
-
-  /* BUDGET SLIDER */
-  .budget-display {
-    background: var(--black);
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    padding: 14px 20px;
-    font-size: 22px; font-weight: 900;
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 12px;
-  }
-  input[type=range] {
-    -webkit-appearance: none;
-    background: var(--border);
-    height: 4px; border-radius: 2px;
-    padding: 0;
-    border: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: var(--gold);
-    cursor: pointer;
-    border: 3px solid var(--black);
-    box-shadow: 0 0 0 1px var(--gold);
-  }
 
   /* NAV BUTTONS */
   .panel-nav {
@@ -1372,75 +1319,24 @@
       <!-- PANEL 3: BUDGET -->
       <div class="panel" id="panel-3">
         <div class="panel-title" data-ar="ميزانية الأثاث" data-en="Furniture Budget">Furniture Budget</div>
-        <div class="panel-sub" data-ar="حدد ميزانيتك وسنقترح أفضل الأثاث بالأسعار المناسبة" data-en="Set your budget and we'll suggest the best furniture at the right prices">حدد ميزانيتك وسنقترح أفضل الأثاث بالأسعار المناسبة</div>
+        <div class="panel-sub" data-ar="اختر مستوى الميزانية وسنقترح أفضل الأثاث بالجودة المناسبة" data-en="Choose your budget level and we'll match furniture quality to it">اختر مستوى الميزانية وسنقترح أفضل الأثاث بالجودة المناسبة</div>
 
-        <div class="budget-display" id="budgetDisplay">1,000 €</div>
-        <input type="range" min="200" max="10000" value="1000" step="100"
-               oninput="updateBudget(this.value)" style="margin-bottom:20px;">
-
-        <div class="form-group" style="margin-bottom:20px;">
-          <label data-en="Currency" data-ar="العملة">Currency</label>
-          <div class="currency-grid">
-            <div class="currency-chip selected" onclick="selectCurrency(this, '€')">
-              <span class="curr-flag">🇪🇺</span>
-              <span class="curr-name" data-en="Euro" data-ar="يورو">Euro</span>
-              <span class="curr-sym">€</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, '$')">
-              <span class="curr-flag">🇺🇸</span>
-              <span class="curr-name" data-en="Dollar" data-ar="دولار">Dollar</span>
-              <span class="curr-sym">$</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, '£')">
-              <span class="curr-flag">🇬🇧</span>
-              <span class="curr-name" data-en="Pound" data-ar="جنيه">Pound</span>
-              <span class="curr-sym">£</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ر.س')">
-              <span class="curr-flag">🇸🇦</span>
-              <span class="curr-name" data-en="Saudi Riyal" data-ar="ريال سعودي">Saudi Riyal</span>
-              <span class="curr-sym">ر.س</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'د.إ')">
-              <span class="curr-flag">🇦🇪</span>
-              <span class="curr-name" data-en="UAE Dirham" data-ar="درهم إماراتي">UAE Dirham</span>
-              <span class="curr-sym">د.إ</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'د.ك')">
-              <span class="curr-flag">🇰🇼</span>
-              <span class="curr-name" data-en="Kuwaiti Dinar" data-ar="دينار كويتي">Kuwaiti Dinar</span>
-              <span class="curr-sym">د.ك</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ر.ق')">
-              <span class="curr-flag">🇶🇦</span>
-              <span class="curr-name" data-en="Qatari Riyal" data-ar="ريال قطري">Qatari Riyal</span>
-              <span class="curr-sym">ر.ق</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ر.ع')">
-              <span class="curr-flag">🇴🇲</span>
-              <span class="curr-name" data-en="Omani Riyal" data-ar="ريال عُماني">Omani Riyal</span>
-              <span class="curr-sym">ر.ع</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'د.ب')">
-              <span class="curr-flag">🇧🇭</span>
-              <span class="curr-name" data-en="Bahraini Dinar" data-ar="دينار بحريني">Bahraini Dinar</span>
-              <span class="curr-sym">د.ب</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ل.س')">
-              <span class="curr-flag">🇸🇾</span>
-              <span class="curr-name" data-en="Syrian Pound" data-ar="ليرة سورية">Syrian Pound</span>
-              <span class="curr-sym">ل.س</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ل.ل')">
-              <span class="curr-flag">🇱🇧</span>
-              <span class="curr-name" data-en="Lebanese Pound" data-ar="ليرة لبنانية">Lebanese Pound</span>
-              <span class="curr-sym">ل.ل</span>
-            </div>
-            <div class="currency-chip" onclick="selectCurrency(this, 'ج.م')">
-              <span class="curr-flag">🇪🇬</span>
-              <span class="curr-name" data-en="Egyptian Pound" data-ar="جنيه مصري">Egyptian Pound</span>
-              <span class="curr-sym">ج.م</span>
-            </div>
+        <div class="layout-grid" id="budgetLevelGrid">
+          <div class="layout-card selected" onclick="selectBudgetLevel(this)" data-prompt="an affordable, budget-friendly furniture tier — simple, functional pieces">
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg></div>
+            <div class="lc-name" data-en="Economy" data-ar="اقتصادي">Economy</div>
+          </div>
+          <div class="layout-card" onclick="selectBudgetLevel(this)" data-prompt="a mid-range furniture tier — good quality, everyday materials">
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/></svg></div>
+            <div class="lc-name" data-en="Standard" data-ar="متوسط">Standard</div>
+          </div>
+          <div class="layout-card" onclick="selectBudgetLevel(this)" data-prompt="a premium furniture tier — higher-end materials and finishes">
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="7.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="16.5" cy="12" r="1.4"/></svg></div>
+            <div class="lc-name" data-en="Premium" data-ar="متميز">Premium</div>
+          </div>
+          <div class="layout-card" onclick="selectBudgetLevel(this)" data-prompt="a luxury furniture tier — top-tier designer materials and finishes">
+            <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 4.6 5 .7-3.6 3.6.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.6 5-.7z"/></svg></div>
+            <div class="lc-name" data-en="Luxury" data-ar="فاخر">Luxury</div>
           </div>
         </div>
 
@@ -2334,7 +2230,6 @@
   }
 
   let currentPanel = 1;
-  let currency = 'EUR';
   let uploadedFiles = [];
   let designCount = 1;
   let beforeAfterOn = false;
@@ -2534,7 +2429,7 @@
   // the AI into a muddled result. This just nudges, it never blocks.
   function checkStyleClash() {
     var groups = {};
-    document.querySelectorAll('.layout-card.selected').forEach(function(card) {
+    document.querySelectorAll('#panel-4 .layout-card.selected').forEach(function(card) {
       var g = card.getAttribute('data-style-group');
       if (g) groups[g] = true;
     });
@@ -2542,15 +2437,9 @@
     if (warning) warning.classList.toggle('show', Object.keys(groups).length > 1);
   }
 
-  function selectCurrency(el, cur) {
-    document.querySelectorAll('#panel-3 .currency-chip').forEach(function(c) { c.classList.remove('selected'); });
+  function selectBudgetLevel(el) {
+    document.querySelectorAll('#budgetLevelGrid .layout-card').forEach(function(c) { c.classList.remove('selected'); });
     el.classList.add('selected');
-    currency = cur;
-    updateBudget(document.querySelector('#panel-3 input[type=range]').value);
-  }
-
-  function updateBudget(val) {
-    document.getElementById('budgetDisplay').textContent = parseInt(val).toLocaleString() + ' ' + currency;
   }
 
   function handleMultiUpload(input) {
@@ -2809,12 +2698,13 @@
     var roomWidth  = panel2Inputs[2] ? panel2Inputs[2].value : '';
 
     // --- PANEL 3: Budget ---
-    var budget = document.getElementById('budgetDisplay') ? document.getElementById('budgetDisplay').textContent : '';
+    var budgetLevelEl = document.querySelector('#budgetLevelGrid .layout-card.selected');
+    var budget = budgetLevelEl ? budgetLevelEl.getAttribute('data-prompt') : '';
 
     // --- PANEL 4: Style & Colors ---
     var selectedStyles = [];
     var selectedStylePrompts = [];
-    document.querySelectorAll('.layout-card.selected').forEach(function(card) {
+    document.querySelectorAll('#panel-4 .layout-card.selected').forEach(function(card) {
       var name = card.querySelector('.lc-name');
       if (name) selectedStyles.push(name.getAttribute('data-en') || name.textContent.trim());
       if (card.getAttribute('data-prompt')) selectedStylePrompts.push(card.getAttribute('data-prompt'));
@@ -2943,7 +2833,7 @@
       (moods.length > 0 ? '\nRoom mood/atmosphere: ' + moods.join(', ') + '. Every design decision should reinforce this mood.' : '') +
 
       // ── BUDGET ──
-      (budget ? '\n\n=== BUDGET & QUALITY FOCUS ===\nFurniture budget: ' + budget + ' — reflect this budget level in material quality and furniture tier.' : '') +
+      (budget ? '\n\n=== BUDGET & QUALITY FOCUS ===\nUse ' + budget + '.' : '') +
 
       // ── USER VISION ──
       (notes ? '\n\n=== USER VISION (HIGHEST PRIORITY — MUST FOLLOW EXACTLY) ===\n' + notes : '') +
@@ -3350,7 +3240,7 @@
 
           if (window.NearbyStores) {
             NearbyStores.render('nearbyStoresContainer', {
-              countryCode: NearbyStores.countryFromCurrency(currency, currentLang),
+              countryCode: NearbyStores.countryFromLocale(),
               lang: currentLang
             });
           } else {
@@ -3583,7 +3473,6 @@
     }
 
     currentPanel = 1;
-    currency = 'EUR';
     uploadedFiles = [];
     fileAngles = [];
     designCount = 1;
