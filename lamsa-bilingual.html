@@ -2241,6 +2241,13 @@
   let designCount = 1;
   let beforeAfterOn = false;
   let designMode = 'redesign'; // 'redesign' = full AI redesign, 'rearrange' = reposition existing furniture only
+  // Standard signal for "running inside an installed Android TWA" — the
+  // OS sets document.referrer to android-app://<package> for pages opened
+  // that way, unset for a normal browser tab. Used to hide the in-app
+  // credit purchase flow (Stripe) on Android, since Google Play requires
+  // Google Play Billing for digital goods bought from inside the app;
+  // buying is still available by visiting the site in a regular browser.
+  var isAndroidTWA = document.referrer.indexOf('android-app://') === 0;
   var formPanelsSnapshot = null; // pristine panel markup, captured once on load — used by startNewDesign()
   var resultAreaSnapshot = null; // pristine result-area markup (doGenerate replaces its contents with the generated image)
   var lastBeforeImageDataUrl = null; // "before" image shown in the before/after result view
@@ -2572,8 +2579,9 @@
         if (typeof data.credits !== 'number') return;
         badge.innerHTML = (isAr ? 'رصيدك: ' : 'Your balance: ') + '<b>' + data.credits + '</b> ' +
           (isAr ? (data.credits === 1 ? 'تصميم' : 'تصاميم') : ('credit' + (data.credits === 1 ? '' : 's'))) +
-          ' &middot; <a href="javascript:void(0)" onclick="showCreditsModal()" style="color:var(--gold);text-decoration:underline;">' +
-          (isAr ? 'شراء المزيد' : 'Buy more') + '</a>';
+          (isAndroidTWA ? '' :
+            ' &middot; <a href="javascript:void(0)" onclick="showCreditsModal()" style="color:var(--gold);text-decoration:underline;">' +
+            (isAr ? 'شراء المزيد' : 'Buy more') + '</a>');
       })
       .catch(function(err) { console.error('[credits] failed to load balance:', err); });
   }
@@ -2591,8 +2599,24 @@
     box.style.cssText = 'position:relative;overflow:hidden;background:#ffffff;border:1px solid #dfe2e6;border-radius:20px;padding:32px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 70px -25px rgba(90,98,116,0.35);';
 
     var title = isAr ? 'اشتري تصاميم' : 'Buy Designs';
-    var sub = message || (isAr ? 'كل تصميم يخصم كريدت واحد من رصيدك' : 'Each design uses 1 credit from your balance');
     var closeLabel = isAr ? 'إغلاق' : 'Close';
+
+    if (isAndroidTWA) {
+      var browserMsg = isAr
+        ? 'شراء الكريدت متوفر حالياً من موقعنا بالمتصفح فقط. افتح lamsa-ten.vercel.app بمتصفح جوالك لإتمام الشراء.'
+        : 'Buying credits is currently only available on our website in a browser. Open lamsa-ten.vercel.app in your phone\'s browser to complete the purchase.';
+      box.innerHTML =
+        '<div style="font-size:42px;margin-bottom:16px;">' + (window.icon ? window.icon('palette') : '') + '</div>' +
+        '<div style="font-size:22px;font-weight:900;color:#3d434b;margin-bottom:8px;">' + title + '</div>' +
+        '<div style="font-size:13px;color:#767d86;margin-bottom:20px;line-height:1.6;">' + browserMsg + '</div>' +
+        '<button type="button" onclick="document.getElementById(\'creditsModalOverlay\').remove()" ' +
+        'style="width:100%;background:transparent;border:1px solid #dfe2e6;color:#767d86;padding:10px;border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px;font-family:Tajawal,sans-serif;">' + closeLabel + '</button>';
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+      return;
+    }
+
+    var sub = message || (isAr ? 'كل تصميم يخصم كريدت واحد من رصيدك' : 'Each design uses 1 credit from your balance');
 
     var packagesHtml = CREDIT_PACKAGES.map(function(pkg) {
       var creditsLabel = isAr ? (pkg.credits + (pkg.credits === 1 ? ' تصميم' : ' تصاميم')) : pkg.label;
