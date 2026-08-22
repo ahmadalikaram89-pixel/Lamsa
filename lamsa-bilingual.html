@@ -1277,6 +1277,11 @@
           </div>
         </div>
 
+        <div class="form-group" style="margin-top:16px;">
+          <label data-en="Anything else about the room? (optional)" data-ar="أي تفاصيل ثانية عن الغرفة مو موجودة فوق؟ (اختياري)">Anything else about the room? (optional)</label>
+          <textarea id="panel2Notes" rows="2" placeholder="e.g. sloped ceiling on the north side, a support column near the window..."></textarea>
+        </div>
+
         <!-- 2D FLOOR PLAN -->
         <div class="floorplan-wrap">
           <div class="floorplan-title" data-en="Room Floor Plan" data-ar="مخطط الغرفة">Room Floor Plan</div>
@@ -1318,6 +1323,11 @@
             <div class="lc-icon"><svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 4.6 5 .7-3.6 3.6.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.6 5-.7z"/></svg></div>
             <div class="lc-name" data-en="Luxury" data-ar="فاخر">Luxury</div>
           </div>
+        </div>
+
+        <div class="form-group" style="margin-top:16px;">
+          <label data-en="Anything else about the budget? (optional)" data-ar="أي تفاصيل ثانية عن الميزانية مو موجودة فوق؟ (اختياري)">Anything else about the budget? (optional)</label>
+          <textarea id="panel3Notes" rows="2" placeholder="e.g. splurge on the sofa but keep everything else affordable..."></textarea>
         </div>
 
         <div class="panel-nav">
@@ -1452,6 +1462,11 @@
             <div class="chip" onclick="selectColor(this)" data-en="Polished Concrete" data-ar="خرسانة مصقولة">Polished Concrete</div>
             <div class="chip" onclick="selectColor(this)" data-en="Carpet" data-ar="سجاد">Carpet</div>
           </div>
+        </div>
+
+        <div class="form-group">
+          <label data-en="Color or style not listed above? (optional)" data-ar="لون أو ستايل مو موجود بالأعلى؟ (اختياري)">Color or style not listed above? (optional)</label>
+          <textarea id="panel4Notes" rows="2" placeholder="e.g. emerald green accents, a coastal Mediterranean feel..."></textarea>
         </div>
 
         <div class="panel-nav">
@@ -2197,6 +2212,28 @@
     };
     var textarea5 = document.querySelector('#panel-5 textarea');
     if (textarea5) textarea5.placeholder = panel5placeholders[lang] || panel5placeholders['en'];
+
+    // Panels 2-4 free-text placeholders (same idea, one line each)
+    var extraPlaceholders = {
+      panel2Notes: {
+        ar: 'مثال: سقف مائل بالجهة الشمالية، عمود إنشائي قرب النافذة...',
+        en: 'e.g. sloped ceiling on the north side, a support column near the window...'
+      },
+      panel3Notes: {
+        ar: 'مثال: صرف أكثر على الكنبة والباقي اقتصادي...',
+        en: 'e.g. splurge on the sofa but keep everything else affordable...'
+      },
+      panel4Notes: {
+        ar: 'مثال: لمسات أخضر زمردي، طابع متوسطي ساحلي...',
+        en: 'e.g. emerald green accents, a coastal Mediterranean feel...'
+      }
+    };
+    Object.keys(extraPlaceholders).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var ph = extraPlaceholders[id];
+      el.placeholder = ph[lang] || ph['en'];
+    });
   }
 
   let currentPanel = 1;
@@ -2702,7 +2739,15 @@
     var selectedFurnitureColorEl = document.querySelector('#furnitureColorChips .chip.selected');
     var furnitureColorText = selectedFurnitureColorEl ? (selectedFurnitureColorEl.getAttribute('data-en') || selectedFurnitureColorEl.textContent.trim()) : '';
 
-    var notes = document.querySelector('#panel-5 textarea') ? document.querySelector('#panel-5 textarea').value.trim() : '';
+    // Free-text boxes on panels 2-4 (room, budget, style/color) plus the
+    // main panel-5 vision box all feed the same USER VISION prompt section
+    // — collected together so anything typed anywhere in the wizard gets
+    // the same "highest priority" treatment from the AI.
+    var panel2Notes = document.getElementById('panel2Notes') ? document.getElementById('panel2Notes').value.trim() : '';
+    var panel3Notes = document.getElementById('panel3Notes') ? document.getElementById('panel3Notes').value.trim() : '';
+    var panel4Notes = document.getElementById('panel4Notes') ? document.getElementById('panel4Notes').value.trim() : '';
+    var panel5Notes = document.querySelector('#panel-5 textarea') ? document.querySelector('#panel-5 textarea').value.trim() : '';
+    var notes = [panel2Notes, panel3Notes, panel4Notes, panel5Notes].filter(Boolean).join('\n');
 
     // ─── Derived values ───
     var styleText        = selectedStyles.length > 0 ? selectedStyles.join(' + ') : 'modern contemporary';
