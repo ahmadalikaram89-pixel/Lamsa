@@ -2752,7 +2752,7 @@
     // ─── Derived values ───
     var styleText        = selectedStyles.length > 0 ? selectedStyles.join(' + ') : 'modern contemporary';
     var stylePromptText  = selectedStylePrompts.length > 0 ? selectedStylePrompts.join(', ') : 'modern contemporary interior design';
-    var colorText        = selectedColors.length > 0 ? selectedColors.join(', ') : 'neutral warm tones';
+    var colorText        = selectedColors.length > 0 ? selectedColors.join(', ') : 'neutral warm';
     var isBedRoom        = (roomType === 'bedroom' || roomType === 'kids');
     var isBathroom       = (roomType === 'bathroom');
 
@@ -2785,7 +2785,7 @@
     }
 
     // Flooring instruction
-    var floorInstruction = floorText ? ('Flooring: ' + floorText + ' throughout the room. ') : '';
+    var floorInstruction = floorText ? ('MANDATORY FLOORING CHANGE: replace the entire floor with ' + floorText + ' throughout the room — this is a required change, not optional. ') : '';
 
     var surfacesInstruction = floorInstruction + rugInstruction;
 
@@ -2796,10 +2796,9 @@
     // ═══════════════════════════════════════════════
     var redesignPrompt =
       // ── CORE INSTRUCTION ──
-      'You are a professional interior designer applying a full redesign to THIS SPECIFIC PHOTO.' +
-      ' The output must show the SAME room from the SAME camera angle and perspective.' +
-      ' STRICTLY PRESERVE: room shape, wall count, ceiling height, number of windows, number of doors, room proportions.' +
-      ' DO NOT add, move, or remove architectural elements (windows, doors, walls, structural beams).' +
+      'You are a professional interior designer performing a COMPLETE FULL REDESIGN of this room — a full renovation, not a light touch-up or minor edit.' +
+      ' Every piece of furniture, every wall color, every floor material, and every decorative element must be replaced according to the specifications below.' +
+      ' The ONLY things that stay identical are the room\'s architecture (walls, windows, doors, ceiling) and the camera angle — everything else in the room must change.' +
       ' This is a ' + roomTypeLabel + ' — only use furniture appropriate for this room type.' +
 
       // ── STRUCTURAL LOCK ──
@@ -2844,7 +2843,7 @@
 
       // ── COLOR & ATMOSPHERE ──
       '\n\n=== COLOR PALETTE & ATMOSPHERE ===' +
-      '\nColor scheme: ' + colorText + ' tones throughout — walls, textiles, furniture, and accessories.' +
+      '\nMANDATORY WALL COLOR CHANGE: repaint the walls entirely in ' + colorText + ' tones — this is a required change, not optional. Apply the same palette to textiles, furniture, and accessories.' +
       (furnitureColorText ? '\nFurniture color: ' + furnitureColorText + ' — apply specifically to furniture pieces (sofas, chairs, tables, cabinets), independent of the wall/overall color scheme above.' : '') +
       (moods.length > 0 ? '\nRoom mood/atmosphere: ' + moods.join(', ') + '. Every design decision should reinforce this mood.' : '') +
 
@@ -2861,8 +2860,8 @@
       '\n• Sharp focus, correct perspective, accurate shadows and reflections.' +
       '\n• Real furniture proportions — nothing oversized or undersized for the room dimensions.' +
       '\n• Visible styling details: throw pillows, plants, books, art, small decor objects that match the chosen style.' +
-      '\n\nAVOID: changing room geometry, altering window/door count, adding extra rooms, cartoon or illustration look, visible AI artifacts, floating furniture, wrong scale objects.' +
-      '\n\nFINAL REMINDER: the walls, windows, and doors from the original photo are fixed and non-negotiable — 100% identical in the output. Only furniture, decor, colors, and finishes change.';
+      '\n\nAVOID: changing room geometry, altering window/door count, adding extra rooms, cartoon or illustration look, visible AI artifacts, floating furniture, wrong scale objects, leaving the original furniture/wall color/flooring untouched.' +
+      '\n\nFINAL REMINDER: the output must look like a completely different, fully furnished room compared to the input photo — same architecture and same camera angle, but entirely new furniture, wall color, flooring, and finishes throughout. A result that still looks like the original room with only one or two minor additions is a FAILED result.';
 
     // ── REARRANGE-ONLY PROMPT ──
     // Keeps every existing furniture piece exactly as photographed and only changes its position/layout.
