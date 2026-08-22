@@ -3,11 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.lamsa",
-    "sha256_cert_fingerprints": [
-      "58:AC:CD:D6:5C:9A:74:E5:EF:09:74:62:01:C3:48:09:6D:FF:64:A8:91:97:0E:BD:A0:4D:45:7F:2B:F4:DC:35",
-      "27:11:67:33:68:C0:1D:05:09:E6:6C:51:76:B4:90:8D:DC:1A:C0:5D:A5:D3:88",
-      "9D:F9:BA:67:2C:66:DC:9A:93:09:D2:D4:3E:C2:1E:7B:AB:1C:3A:FF:07:6E:85",
-      "95:79:42:3F:AD:53:4E:3B:28:5D:B8:61:13:16:8E:06:DD:37:44:17:DA:11:5F"
-    ]
+    "sha256_cert_fingerprints": ["58:AC:CD:D6:5C:9A:74:E5:EF:09:74:62:01:C3:48:09:6D:FF:64:A8:91:97:0E:BD:A0:4D:45:7F:2B:F4:DC:35"]
   }
 }]
