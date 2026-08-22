@@ -2977,9 +2977,13 @@
       // high value — but 1 (max) turned out to let the model regenerate the
       // room's actual structure (walls, windows, layout) instead of just
       // its contents, occasionally producing a different room entirely.
-      // 0.85 still clears prominent fixtures while keeping the source
-      // room's geometry recognizable.
-      if (imageUrl) requestBody.strength = 0.85;
+      // 0.85 was still coming back nearly unchanged specifically when the
+      // source photo was already a nicely furnished, well-lit room (the
+      // model treats an already-"finished"-looking input as needing less
+      // editing) — 0.93 leaves a smaller but deliberate margin below 1 to
+      // push harder on those cases while still trying to avoid the
+      // full-geometry-rewrite failure mode seen at 1.0.
+      if (imageUrl) requestBody.strength = 0.93;
       console.log('[generate] sending to /api/generate:', requestBody);
 
       // Stage 1: Flux Kontext Pro does the first full redesign pass
