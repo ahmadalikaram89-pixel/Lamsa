@@ -2785,9 +2785,10 @@
         ? '\nThis is a BATHROOM. DO NOT place any beds, sofas, wardrobes, or bedroom/living room furniture.' +
           '\nREMOVE all existing fixtures. Install ALL of the following bathroom fixtures:' +
           '\n• ' + furnitureText.split(', ').join('\n• ') +
+          (notes ? '\nAlso include anything explicitly requested in the USER VISION section below, even if not listed above.' : '') +
           '\nAll fixtures must use water-resistant materials. Tile grout lines must look realistic and precise.'
         : '\nStrip the room down to its bare shell first: bare walls, bare floor, bare ceiling, only the windows/doors already there. Remove every existing furniture piece, fixture, and fitting from the photo, with no exceptions.' +
-          '\nThe finished room must contain ONLY the items listed below — nothing else. No item of any kind may appear unless it is explicitly listed here.' +
+          '\nThe finished room must contain the items listed below' + (notes ? ', plus anything explicitly requested in the USER VISION section below' : '') + ' — nothing else. No item of any kind may appear unless it is explicitly listed here' + (notes ? ' or mentioned in USER VISION' : '') + '.' +
           '\nPlace ALL of the following items inside the room, correctly proportioned to the room size:' +
           (isBedRoom ? '\n• ' + (bedCount === 2 ? 'TWO separate single beds (not a bunk bed, two individual beds)' : 'Standard bed with headboard') : '') +
           '\n• ' + furnitureText.split(', ').join('\n• ')
